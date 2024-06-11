@@ -12,6 +12,7 @@ orientation=vertical
 content_halign=fill
 insensitive=true
 allow_images=true
-image_size=50
+image_size=36
 gtk_dark=true
 dynamic_lines=false
+
