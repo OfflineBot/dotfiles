@@ -1,0 +1,101 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 35,
+    "margin": "10px 15px 0px 15px",
+    "spacing": 4,
+    "exclusive": true,
+    "gtk-layer-shell": true,
+    "passthrough": false,
+    "fixed-center": true,
+    "modules-left": ["hyprland/workspaces", "hyprland/window"],
+    "modules-center": [],
+    "modules-right": [
+        "cpu",
+        "memory",
+        "pulseaudio",
+        "clock",
+        "clock#simpleclock",
+        "battery",
+        "network",
+        "custom/power"
+    ],
+
+    "cpu": {
+        "format": "  <span font-family='0xProto'>{usage}%</span>",
+        "tooltip": true,
+        "interval": 1
+    },
+    "memory": {
+        "format": "<span font='Font Awesome 5 Free 9'></span> <span font-family='0xProto'> {used:0.2f}G</span>"
+    },
+
+    "pulseaudio": {
+        "format": "<span font='Font Awesome 5 Free 9'>{icon}</span> <span font-family='0xProto'>{volume}%</span>",
+        "format-muted": "<span font='Font Awesome 5 Free 9'></span> <span font-family='0xProto'> muted</span>",
+        "format-icons": {
+            "headphone": " ",
+            "hands-free": "󰂑",
+            "headset": "󰂑",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": [" ", " ", " "]
+        },
+        "on-click": "pavucontrol"
+    },
+    "clock": {
+        "format": "  <span font-family='0xProto'> {:L%a %d %b}</span>",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "clock#simpleclock": {
+        "tooltip": false,
+        "format": " <span font-family='0xProto'> {:%H:%M}</span>"
+    },
+    "tray": {
+        "show-passive-items": true,
+        "spacing": 10
+    },
+    "battery": {
+        "format": "<span font='Font Awesome 5 Free 11'>{icon}</span> <span font-family='0xProto'> {capacity}%</span>",
+        "format-icons": ["", "", "", "", ""],
+        "format-time": "{H}h{M}m",
+        "format-charging": "<span font='Font Awesome 5 Free'></span>  <span font='Font Awesome 5 Free 11'>{icon}</span> <span font-family='0xProto'> {capacity}%</span>",
+        "format-full": "<span font='Font Awesome 5 Free'></span>  <span font='Font Awesome 5 Free 11'>{icon}</span>  <span font-family='0xProto'>Charged</span>",
+        "interval": 30,
+        "states": {
+            "warning": 25,
+            "critical": 10
+        },
+        "tooltip": true,
+        "tooltip-format": "Time left: {time}, Capacity: {capacity}%",
+        "on-click": "3"
+    },
+    "network": {
+        "format-wifi": "<span font='Font Awesome 5 Free 9'></span>",
+        "format-ethernet": "{ifname} ",
+        "format-ethernet": "{ifname} ",
+        "format-disconnected": "",
+        "max-length": 50,
+        "tooltip": true,
+        "tooltip-format": "Connected: {essid} ({signalStrength}%)"
+        /*"on-click": "kitty -e 'nmtui'" */
+    },
+    "custom/power": {
+        "tooltip": false,
+        "on-click": "wlogout -p layer-shell &",
+        "format": "<span font='Font Awesome 5 Free 9'></span>"
+    },
+
+    "wlr/workspaces": {
+        "on-click": "activate",
+        "format": "<span font='0xProto'>{name}</span>",
+        "all-outputs": true,
+        "disable-scroll": false,
+        "active-only": false
+    },
+    "hyprland/window": {
+        "format": "<span font-family='0xProto'>{}</span>",
+        "separate-outputs": true
+    },
+}
