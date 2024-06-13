@@ -78,7 +78,8 @@
         "format-disconnected": "",
         "max-length": 50,
         "tooltip": true,
-        "tooltip-format": "Connected: {essid} ({signalStrength}%)",
+        "tooltip-format": "Connected: {essid} ({signalStrength}%)"
+        /*"on-click": "kitty -e 'nmtui'" */
     },
     "custom/power": {
         "tooltip": false,

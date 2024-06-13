@@ -40,7 +40,10 @@ return require('packer').startup(function(use)
         'nvim-telescope/telescope.nvim', tag = '0.1.6',
         requires = { {'nvim-lua/plenary.nvim'} }
     }
-    use 'nvim-lualine/lualine.nvim'
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+    }
     use 'kyazdani42/nvim-web-devicons'
     use 'kyazdani42/nvim-tree.lua'
 
