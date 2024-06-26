@@ -17,7 +17,7 @@ indicator-radius=240
 indicator-thickness=20
 indicator-caps-lock
 
-color=09090b
+color=1e1e1e
 bs-hl-color=f5e0dc
 caps-lock-bs-hl-color=f5e0dc
 caps-lock-key-hl-color=a6e3a1
@@ -35,7 +35,7 @@ line-clear-color=00000000
 line-caps-lock-color=00000000
 line-ver-color=00000000
 line-wrong-color=00000000
-ring-color=cba6f7
+ring-color=8de0d9
 ring-clear-color=f5e0dc
 ring-caps-lock-color=fab387
 ring-ver-color=89b4fa
@@ -46,3 +46,4 @@ text-clear-color=f5e0dc
 text-caps-lock-color=fab387
 text-ver-color=89b4fa
 text-wrong-color=eba0ac
+
