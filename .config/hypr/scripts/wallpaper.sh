@@ -4,7 +4,7 @@
 IMG_DIR=~/Pictures/slideshow
 
 # in seconds
-SLEEP_TIMER=100
+SLEEP_TIMER=400
 
 while true; do
     for image in "$IMG_DIR"/*; do

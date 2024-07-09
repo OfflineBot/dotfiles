@@ -33,6 +33,4 @@ o.title = true
 o.clipboard = 'unnamedplus'
 
 vim.cmd([[autocmd FileType * set formatoptions-=ro]])
-
 vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
-vim.keymap.set('n', 'm', ':lua vim.lsp.buf.hover()<CR>')

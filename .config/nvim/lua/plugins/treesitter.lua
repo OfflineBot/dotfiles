@@ -3,7 +3,8 @@ require('nvim-treesitter.configs').setup {
         'python',
         'comment',
         'lua',
-        'rust'
+        'rust',
+        'markdown'
         --'typescript',
         --'javascript',
     },
