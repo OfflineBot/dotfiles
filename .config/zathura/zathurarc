@@ -8,7 +8,7 @@ set recolor-darkcolor           rgba(205,214,244,1.0)
 
 
 # important
-set recolor                     "true"
+set recolor                     "false"
 set recolor-keephue             "true"
 
 
