@@ -12,7 +12,7 @@ set t_Co=256
 
 let s:rosewater = "#F5E0DC"
 let s:flamingo = "#F2CDCD"
-let s:pink = "#F5C2E7"
+let s:pink = "#e3807b"
 let s:mauve = "#CBA6F7"
 let s:red = "#F38BA8"
 let s:maroon = "#EBA0AC"
