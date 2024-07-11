@@ -83,6 +83,14 @@ window#waybar.hidden {
     background-color: rgba(0, 0, 0, 0);
 }
 
+#network {
+    color: #e3855b;
+}
+
+#battery {
+    color: #e6c29a;
+}
+
 #custom-sep {
     padding: 0px;
     color: #585b70;
