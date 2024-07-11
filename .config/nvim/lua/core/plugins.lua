@@ -64,6 +64,13 @@ return require('packer').startup(function(use)
     use 'wellle/context.vim'
     use 'antoinemadec/FixCursorHold.nvim'
 
+    use {
+        'goolord/alpha-nvim',
+        config = function ()
+            require'alpha'.setup(require'alpha.themes.dashboard'.config)
+        end
+    }
+    
     -- end of plugins
     if packer_bootstrap then
         require('packer').sync()

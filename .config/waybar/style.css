@@ -1,4 +1,4 @@
-@define-color mainbg rgba(14, 14, 14, 0.7);
+@define-color mainbg rgba(15, 15, 15, 0.7);
 @define-color panel-color #181818;
 
 /*@import url("./colors.css");*/
@@ -19,8 +19,9 @@ window#waybar {
     /* background-color: #1e1e2e; */
     /* background-color: #181825; */
     background-color: @mainbg;
-    border: 1px solid #888888;
-    border-radius: 5px;
+    border: none;
+    border-bottom: 1px solid #888888;
+    /*border-radius: 5px;*/
 }
 
 window#waybar.hidden {
