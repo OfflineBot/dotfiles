@@ -11,8 +11,10 @@ ShellRoot {
     property int borderSize: 4
     property int fromBorder: 2
     property color backgroundColor: "#1e2326"
-    property color borderColor: Qt.rgba(0.827, 0.776, 0.667, 0.8) 
-    property int cornerRadius: 20
+    property color borderColor: Qt.rgba(0.827, 0.776, 0.667, 1.0)
+    property int cornerRadius: 8
+
+    Time { }
 
 
     BorderTop {

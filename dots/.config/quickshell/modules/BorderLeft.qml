@@ -1,5 +1,7 @@
 
 import Quickshell
+import Quickshell.Widgets
+import Quickshell.Io
 import QtQuick
 
 
@@ -18,11 +20,11 @@ Variants {
         anchors.top: true
         anchors.left: true
         anchors.bottom: true
+        //aboveWindows: false
 
         implicitWidth: verticalBorder.borderSize
-        color: "transparent"  // allows internal rectangles to show
+        color: "transparent" 
 
-        // TOP RECTANGLE (overlaps top corner area)
         Rectangle {
             x: 0
             y: 0
@@ -31,13 +33,22 @@ Variants {
             color: verticalBorder.backgroundColor
         }
 
-        // MAIN RECTANGLE (middle border)
         Rectangle {
             x: 0
             y: verticalBorder.cornerRadius
             width: parent.width
             height: parent.height - 2 * verticalBorder.cornerRadius
             color: verticalBorder.backgroundColor
+
+            IconImage {
+                source: "file://" + Quickshell.shellPath("images/arch.png")
+                width: parent.width - 20
+                height: 50
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
         }
 
         // BOTTOM RECTANGLE (overlaps bottom corner area)

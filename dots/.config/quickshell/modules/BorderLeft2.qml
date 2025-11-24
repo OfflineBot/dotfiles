@@ -6,9 +6,9 @@ Variants {
     model: Quickshell.screens
     
     property int borderSize: 4
-    property int cornerRadius: 20  // Add this property
+    property int marginRight: 20
     property color borderColor: "#ff00f0"
-    
+
     PanelWindow {
         required property var modelData
         screen: modelData
@@ -16,20 +16,12 @@ Variants {
         anchors {
             top: true
             bottom: true
-            left: true
+            left: true  // or left: true
         }
         
-        margins {                              // Add this block
-            top: borderRight.cornerRadius
-            bottom: borderRight.cornerRadius
-        }
         
-        color: "transparent"
-        implicitWidth: 2  // You can use 1px now
-        
-        Rectangle {
-            anchors.fill: parent
-            color: borderRight.borderColor
-        }
+        implicitWidth: borderRight.borderSize
+        color: borderRight.borderColor
     }
 }
+
