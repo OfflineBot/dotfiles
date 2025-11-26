@@ -1,5 +1,8 @@
 
+
 import Quickshell
+import Quickshell.Widgets
+import Quickshell.Io
 import QtQuick
 
 
@@ -17,8 +20,10 @@ Variants {
         aboveWindows: false
 
         anchors.top: true
-        anchors.right: true
+        anchors.left: true
         anchors.bottom: true
+
+        visible: screen.name !== "DP-1"
 
         implicitWidth: verticalBorder.borderSize
         color: "transparent"  // allows internal rectangles to show

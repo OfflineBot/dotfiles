@@ -20,7 +20,8 @@ Variants {
         anchors.top: true
         anchors.left: true
         anchors.bottom: true
-        //aboveWindows: false
+        aboveWindows: false
+        visible: screen.name === "DP-1"
 
         implicitWidth: verticalBorder.borderSize
         color: "transparent" 
@@ -40,13 +41,43 @@ Variants {
             height: parent.height - 2 * verticalBorder.cornerRadius
             color: verticalBorder.backgroundColor
 
-            IconImage {
-                source: "file://" + Quickshell.shellPath("images/arch.png")
-                width: parent.width - 20
-                height: 50
+
+            Column {
+                id: clockColumn
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottomMargin: 20
+                spacing: 20
+                width: parent.width - 10
+                Text {
+                    id: timeText
+                    text: timeText.text
+                    font.family: "Arkitech"
+                    font.bold: true
+                    font.pixelSize: 18
+                    color: "#a89983"
+                    horizontalAlignment: Text.AlignRight
+                    anchors.horizontalCenter: parent.horizontalCenter                   
+                }
+
+
+                IconImage {
+                    source: "file://" + Quickshell.shellPath("images/arch.png")
+                    width: parent.width - 10
+                    height: 50
+                    anchors.horizontalCenter: parent.horizontalCenter                   
+                }
+            }
+
+
+
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: {
+                    timeText.text = Qt.formatDateTime(new Date(), "HH:mm")
+                }
             }
 
         }

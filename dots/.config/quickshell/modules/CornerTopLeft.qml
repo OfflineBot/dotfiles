@@ -16,6 +16,7 @@ Variants {
     PanelWindow {
         required property var modelData
         screen: modelData
+        aboveWindows: false
         
         anchors {
             top: true

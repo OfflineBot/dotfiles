@@ -12,14 +12,14 @@ Variants {
     PanelWindow {
         required property var modelData
         screen: modelData
-        
+        aboveWindows: false
+
         anchors {
             top: true
             bottom: true
             left: true  // or left: true
         }
-        
-        
+
         implicitWidth: borderRight.borderSize
         color: borderRight.borderColor
     }

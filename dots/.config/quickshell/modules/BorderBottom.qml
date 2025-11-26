@@ -20,6 +20,7 @@ Variants {
         anchors.right: true
 
         implicitHeight: horizontalBorder.borderSize
+        aboveWindows: false
         color: "transparent"  // so internal rectangles show fully
 
         // LEFT RECTANGLE
