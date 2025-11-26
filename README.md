@@ -12,4 +12,4 @@ My personal Arch Linux setup
 
 ![Screenshot2](./screenshots/desktop.png)
 ![Screenshot1](./screenshots/apps.png)
-
+![Screenshot0](./screenshots/quickshell.png)
