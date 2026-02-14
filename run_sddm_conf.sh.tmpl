@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SRC="{{ .chezmoi.sourceDir }}/dot_sddm.conf"
+DEST="/etc/sddm.conf"
+
+echo "Installing $SRC -> $DEST"
+
+sudo install -m 644 "$SRC" "$DEST"
