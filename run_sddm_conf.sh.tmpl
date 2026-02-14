@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SRC="{{ .chezmoi.sourceDir }}/dot_sddm.conf"
-DEST="/etc/sddm.conf"
+THEME_NAME="sugar-candy"
+SRC_CONF="{{ .chezmoi.sourceDir }}/dot_sddm.conf"
+SRC_THEME="{{ .chezmoi.sourceDir }}/sddm-themes/${THEME_NAME}"
+DEST_CONF="/etc/sddm.conf"
+DEST_THEME="/usr/share/sddm/themes/${THEME_NAME}"
 
-echo "Installing $SRC -> $DEST"
+echo "Installing SDDM config"
+sudo install -m 644 "$SRC_CONF" "$DEST_CONF"
 
-sudo install -m 644 "$SRC" "$DEST"
+echo "Installing SDDM theme: ${THEME_NAME}"
+sudo rm -rf "$DEST_THEME"
+sudo cp -r "$SRC_THEME" "$DEST_THEME"
+sudo chmod -R 755 "$DEST_THEME"
