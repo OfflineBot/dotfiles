@@ -41,6 +41,28 @@ return {
                 },
                 capabilities = capabilities
             })
+            lspconfig.rust_analyzer.setup({
+                capabilities = capabilities,
+                settings = {
+                    ["rust-analyzer"] = {
+                        cachePriming = {
+                            enable = true,
+                        },
+                        procMacro = {
+                            enable = true,
+                        },
+                        cargo = {
+                            buildScripts = {
+                                enable = true,
+                            },
+                            features = "all",
+                        },
+                        diagnostics = {
+                            enable = true,
+                        },
+                    }
+                }
+            })
             lspconfig.solargraph.setup({
                 capabilities = capabilities
             })
