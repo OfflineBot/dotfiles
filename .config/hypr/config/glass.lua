@@ -46,3 +46,12 @@ hl.window_rule({
     tag     = "+hyprglass_disabled",
     opacity = 1.0,
 })
+
+-- "+" tags stick after the rule stops matching, so strip it again
+-- once the window leaves fullscreen.
+hl.window_rule({
+    name  = "restore-glass-after-fullscreen",
+    match = { fullscreen = false },
+
+    tag = "-hyprglass_disabled",
+})
