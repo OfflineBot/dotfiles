@@ -1,0 +1,12 @@
+# cachyrice
+
+my cachyos dotfiles. hyprland with a lua config, quickshell for the bar,
+launcher and overview, kitty + fish for the terminal side.
+
+![desktop](screenshots/desktop.png)
+![terminals](screenshots/terminals.png)
+
+also in here: niri and mango configs from trying stuff out, eww, mako,
+fuzzel/rofi, nvim, micro, btop, fastfetch, zathura and a few wallpapers.
+
+everything lives under `.config`, just copy over what you want.

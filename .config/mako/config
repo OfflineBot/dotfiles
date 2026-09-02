@@ -1,0 +1,23 @@
+
+font=FiraCode Nerd Font Mono 11
+background-color=#11121aee
+text-color=#d5dde8
+border-color=#8ec07b
+border-size=2
+border-radius=14
+progress-color=over #2a3950
+padding=12
+margin=8
+default-timeout=5000
+max-visible=3
+layer=overlay
+anchor=top-right
+
+[urgency=low]
+border-color=#8fbed1
+text-color=#d5dde8
+
+[urgency=high]
+border-color=#fb4833
+text-color=#d5dde8
+default-timeout=10000

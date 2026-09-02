@@ -1,0 +1,8 @@
+require("binds.apps")
+require("binds.window")
+require("binds.monitors")
+require("binds.workspaces")
+require("binds.media")
+require("binds.screenshot")
+require("binds.system")
+require("binds.mouse")
