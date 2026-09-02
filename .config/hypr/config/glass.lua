@@ -34,16 +34,11 @@ if hl.plugin.hyprglass then
     })
 end
 
--- The glass is drawn behind the window — with fully opaque windows it stays
--- invisible, hence some transparency here (overrides theme.lua).
-hl.config({
-    decoration = {
-        active_opacity   = 0.92,
-        inactive_opacity = 0.85,
-    },
-})
+-- The glass is drawn behind the window, so it only shows through translucent
+-- ones: kitty (own background alpha) and empty firefox windows (rules.lua).
+-- Everything else stays opaque via theme.lua.
 
--- Fullscreen (Videos, Spiele): kein Glas, volle Deckkraft
+-- Fullscreen (videos, games): no glass, full opacity
 hl.window_rule({
     name  = "fullscreen-no-glass",
     match = { fullscreen = true },
