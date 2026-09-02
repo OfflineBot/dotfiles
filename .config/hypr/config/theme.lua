@@ -1,11 +1,11 @@
----- palette -------------------------------------------------------------
+---- palette: catppuccin mocha -------------------------------------------
 
 local colors = {
-    active   = "rgb(a4a9a8)",
-    inactive = "rgb(484848)",
-    urgent   = "rgb(ad401f)",
-    bright   = "rgb(d4c9c8)",
-    bg       = "rgb(201b14)",
+    active   = { colors = { "rgb(cba6f7)", "rgb(eba0ac)" }, angle = 45 },
+    inactive = "rgb(6c7086)",
+    urgent   = "rgb(f38ba8)",
+    bright   = "rgb(cdd6f4)",
+    bg       = "rgb(1e1e2e)",
 }
 
 hl.config({
@@ -37,7 +37,7 @@ hl.config({
             enabled      = true,
             range        = 4,
             render_power = 3,
-            color        = 0xee1a1a1a,
+            color        = 0xee11111b,
         },
 
         blur = {

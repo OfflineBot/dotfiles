@@ -3,9 +3,9 @@ import QtQuick
 
 Row {
     id: root
-    property color textColor: "#d5dde8"
-    property color accentColor: "#8ec07b"
-    property color warnColor: "#fb4833"
+    property color textColor: "#cdd6f4"
+    property color accentColor: "#cba6f7"
+    property color warnColor: "#f38ba8"
 
     spacing: 4
     visible: UPower.displayDevice && UPower.displayDevice.isLaptopBattery

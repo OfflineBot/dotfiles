@@ -8,11 +8,11 @@ import QtQuick.Controls
 Scope {
     id: root
 
-    property color backgroundColor: "#1a1b26"
-    property color borderColor: "#d5dde8"
-    property color searchBorderColor: "#858d98"
-    property color textColor: "#d5dde8"
-    property color selectionColor: "#8ec07b"
+    property color backgroundColor: "#1e1e2e"
+    property color borderColor: "#cdd6f4"
+    property color searchBorderColor: "#7f849c"
+    property color textColor: "#cdd6f4"
+    property color selectionColor: "#cba6f7"
     property real backgroundOpacity: 0.78
     property int borderWidth: 1
     property int cornerRadius: 14

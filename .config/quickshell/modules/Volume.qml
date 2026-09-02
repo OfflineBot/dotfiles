@@ -5,7 +5,7 @@ import QtQuick
 Item {
     id: root
 
-    property color textColor: "#d5dde8"
+    property color textColor: "#cdd6f4"
 
     implicitWidth: indicator.implicitWidth
     implicitHeight: 18

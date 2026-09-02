@@ -5,8 +5,8 @@ Row {
 
     property var provider
     property string screenName
-    property color textColor: "#d5dde8"
-    property color activeColor: "#8ec07b"
+    property color textColor: "#cdd6f4"
+    property color activeColor: "#cba6f7"
 
     spacing: 6
 
@@ -38,7 +38,7 @@ Row {
                 text: chip.label
                 font.pixelSize: 13
                 font.family: "FiraCode Nerd Font Mono"
-                color: chip.isFocused ? "#11121a" : root.textColor
+                color: chip.isFocused ? "#1e1e2e" : root.textColor
                 opacity: chip.isFocused || chip.modelData.active ? 1.0 : 0.55
             }
 

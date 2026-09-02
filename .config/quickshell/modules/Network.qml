@@ -12,11 +12,11 @@ Item {
     property int barHeight: 30
     property int barMargin: 8
     property real backgroundOpacity: 0.65
-    property color textColor: "#d5dde8"
-    property color accentColor: "#8ec07b"
-    property color warnColor: "#fabd2f"
-    property color backgroundColor: "#11121a"
-    property color borderColor: "#d5dde8"
+    property color textColor: "#cdd6f4"
+    property color accentColor: "#cba6f7"
+    property color warnColor: "#f9e2af"
+    property color backgroundColor: "#1e1e2e"
+    property color borderColor: "#cdd6f4"
 
     readonly property int dropTop: barMargin + barHeight + 8
 
@@ -444,7 +444,7 @@ Item {
                     Layout.preferredHeight: 34
                     visible: root.portal
                     radius: 6
-                    color: "#3a2f1a"
+                    color: "#313244"
                     border.color: root.warnColor
                     border.width: 1
                     Text {
@@ -468,7 +468,7 @@ Item {
                     Layout.fillWidth: true
                     visible: root.errorText.length > 0
                     text: root.errorText
-                    color: "#fb4833"
+                    color: "#f38ba8"
                     font.family: "FiraCode Nerd Font Mono"
                     font.pixelSize: 11
                     wrapMode: Text.WordWrap
@@ -772,7 +772,7 @@ Item {
                         Text {
                             anchors.centerIn: parent
                             text: credPanel.busy ? "Connecting…" : "Connect"
-                            color: "#11121a"
+                            color: "#1e1e2e"
                             font.family: "FiraCode Nerd Font Mono"
                             font.pixelSize: 13
                             font.bold: true

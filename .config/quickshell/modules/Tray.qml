@@ -5,7 +5,7 @@ import QtQuick
 
 Row {
     id: root
-    property color textColor: "#d5dde8"
+    property color textColor: "#cdd6f4"
     spacing: 10
 
     property var hiddenIds: ["Arch-Update"]

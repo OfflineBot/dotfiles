@@ -40,7 +40,7 @@ function fish_prompt
 	if test $last_status -ne 0
 		set stat (set_color red)"[$last_status]" (set_color normal)
 	end
-    string join '' -- (set_color --bold green) (prompt_pwd) $stat ' > ' (set_color normal)
+    string join '' -- (set_color --bold cba6f7) (prompt_pwd) $stat ' > ' (set_color normal)
 end
 
 fish_add_path /home/offlinebot/.spicetify

@@ -6,8 +6,8 @@ import "./modules"
 ShellRoot {
     id: root
 
-    property color backgroundColor: "#11121a"
-    property color borderColor: "#d5dde8"
+    property color backgroundColor: "#1e1e2e"
+    property color borderColor: "#cdd6f4"
     property color textColor: borderColor
 
     property int borderWidth: 1

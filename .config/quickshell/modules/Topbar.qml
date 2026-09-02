@@ -6,10 +6,10 @@ import QtQuick
 Scope {
     id: root
 
-    property color backgroundColor: "#11121a"
-    property color borderColor: "#d5dde8"
-    property color textColor: "#d5dde8"
-    property color accentColor: "#8ec07b"
+    property color backgroundColor: "#1e1e2e"
+    property color borderColor: "#cdd6f4"
+    property color textColor: "#cdd6f4"
+    property color accentColor: "#cba6f7"
     property real backgroundOpacity: 0.65
     property int barHeight: 30
     property int barMargin: 0

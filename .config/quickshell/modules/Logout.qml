@@ -6,18 +6,18 @@ import QtQuick
 Scope {
     id: root
 
-    property color backgroundColor: "#11121a"
-    property color borderColor: "#d5dde8"
-    property color textColor: "#d5dde8"
+    property color backgroundColor: "#1e1e2e"
+    property color borderColor: "#cdd6f4"
+    property color textColor: "#cdd6f4"
     property int borderWidth: 1
     property int cornerRadius: 14
 
     property real backgroundOpacity: 0.65
     property real backdropOpacity: 0.35
 
-    property color logoutColor: "#8ec07b"
-    property color poweroffColor: "#fb4833"
-    property color rebootColor: "#8fbed1"
+    property color logoutColor: "#cba6f7"
+    property color poweroffColor: "#f38ba8"
+    property color rebootColor: "#89dceb"
 
     property int gap: 10
     property int margin: 10

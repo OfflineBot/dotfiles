@@ -16,6 +16,7 @@ return {
             "hrsh7th/cmp-cmdline",
             'hrsh7th/cmp-buffer',
             'hrsh7th/cmp-nvim-lsp-signature-help',
+            'onsails/lspkind.nvim',
         },
 
         config = function()
@@ -32,6 +33,23 @@ return {
                 window = {
                     completion = cmp.config.window.bordered({ border = "rounded" }),
                     documentation = cmp.config.window.bordered({ border = "rounded" }),
+                },
+                formatting = {
+                    fields = { "kind", "abbr", "menu" },
+                    format = require("lspkind").cmp_format({
+                        mode = "symbol_text",
+                        maxwidth = 40,
+                        ellipsis_char = "…",
+                        menu = {
+                            nvim_lsp = "[lsp]",
+                            luasnip  = "[snip]",
+                            buffer   = "[buf]",
+                            path     = "[path]",
+                        },
+                    }),
+                },
+                experimental = {
+                    ghost_text = true,
                 },
                 sorting = {
                     priority_weight = 2,

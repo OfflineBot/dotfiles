@@ -2,9 +2,13 @@ return {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons', 'catppuccin/nvim' },
     config = function()
+        local theme = require('lualine.themes.catppuccin-mocha')
+        theme.normal.a.bg = '#cba6f7'
+        theme.normal.b.fg = '#cba6f7'
+
         require('lualine').setup({
             options = {
-                theme = 'catppuccin-mocha'
+                theme = theme
             },
             sections = {
                 lualine_a = {'mode'},

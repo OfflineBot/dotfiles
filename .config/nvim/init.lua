@@ -15,5 +15,5 @@ vim.opt.rtp:prepend(lazypath)
 require("settings")
 require("lazy").setup("plugins")
 
-vim.cmd.colorscheme "serenity"
+vim.cmd.colorscheme "catppuccin"
 

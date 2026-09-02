@@ -13,10 +13,10 @@ Rectangle {
     required property real monH
 
     property bool selected: false
-    property color textColor: "#d5dde8"
-    property color borderColor: "#d5dde8"
-    property color accentColor: "#8ec07b"
-    property color windowBackdrop: "#1b1b25"
+    property color textColor: "#cdd6f4"
+    property color borderColor: "#cdd6f4"
+    property color accentColor: "#cba6f7"
+    property color windowBackdrop: "#181825"
     property bool live: true
 
     signal activated()
@@ -115,7 +115,7 @@ Rectangle {
         Text {
             anchors.centerIn: parent
             text: tile.slot
-            color: tile.isActive ? "#11121a" : tile.textColor
+            color: tile.isActive ? "#1e1e2e" : tile.textColor
             opacity: tile.isActive ? 1.0 : (tile.used ? 0.85 : 0.35)
             font.pixelSize: 11
             font.family: "FiraCode Nerd Font Mono"

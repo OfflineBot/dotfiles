@@ -6,7 +6,7 @@ return {
     {
         "catppuccin/nvim",
         name = "catppuccin",
-        lazy = true,
+        lazy = false,
         priority = 1000,
         opts = {
             flavour = "mocha",
@@ -16,6 +16,33 @@ return {
                 treesitter = true,
                 neotree = true,
             },
+            custom_highlights = function(c)
+                return {
+                    Directory            = { fg = c.mauve },
+                    NeoTreeDirectoryIcon = { fg = c.mauve },
+                    NeoTreeDirectoryName = { fg = c.mauve },
+                    NeoTreeRootName      = { fg = c.mauve, bold = true },
+                    Title                = { fg = c.mauve, bold = true },
+                    CursorLineNr         = { fg = c.mauve },
+
+                    FloatBorder             = { fg = c.mauve },
+                    WinSeparator            = { fg = c.mauve },
+                    TelescopeBorder         = { fg = c.mauve },
+                    TelescopePromptPrefix   = { fg = c.mauve },
+                    TelescopeSelectionCaret = { fg = c.mauve },
+                    TelescopeMatching       = { fg = c.mauve, bold = true },
+                    CurSearch               = { fg = c.base, bg = c.mauve },
+                    IncSearch               = { fg = c.base, bg = c.mauve },
+                    AlphaHeader             = { fg = c.mauve },
+                    IblScope                = { fg = c.mauve },
+
+                    PmenuSel          = { fg = c.base, bg = c.mauve, bold = true },
+                    PmenuThumb        = { bg = c.mauve },
+                    CmpItemAbbrMatch      = { fg = c.mauve, bold = true },
+                    CmpItemAbbrMatchFuzzy = { fg = c.mauve, bold = true },
+                    CmpItemMenu           = { fg = c.overlay0, italic = true },
+                }
+            end,
         },
     },
     {
@@ -23,9 +50,7 @@ return {
         name = "serenity",
         dir = vim.fn.stdpath("config"),
         lazy = false,
-        priority = 1000,
-        config = function()
-            vim.cmd.colorscheme("serenity")
-        end,
+        priority = 999,
+        config = function() end,
     },
 }

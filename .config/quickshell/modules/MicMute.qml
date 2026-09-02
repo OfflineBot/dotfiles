@@ -5,8 +5,8 @@ import QtQuick
 Item {
     id: root
 
-    property color textColor: "#d5dde8"
-    property color mutedColor: "#fb4833"
+    property color textColor: "#cdd6f4"
+    property color mutedColor: "#f38ba8"
 
     property bool muted: false
 
