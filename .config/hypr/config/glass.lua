@@ -38,10 +38,11 @@ end
 -- ones: kitty (own background alpha) and empty firefox windows (rules.lua).
 -- Everything else stays opaque via theme.lua.
 
--- Fullscreen (videos, games): no glass, full opacity
+-- Fullscreen (videos, games): no glass, full opacity. Kitty is exempt —
+-- its own background alpha would show a flat grey backdrop without glass.
 hl.window_rule({
     name  = "fullscreen-no-glass",
-    match = { fullscreen = true },
+    match = { fullscreen = true, class = "negative:^kitty$" },
 
     tag     = "+hyprglass_disabled",
     opacity = 1.0,
