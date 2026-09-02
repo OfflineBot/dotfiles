@@ -44,6 +44,21 @@ hl.window_rule({
     pin   = true,
 })
 
+-- glass only on empty windows; any loaded page changes the title and goes opaque
+hl.window_rule({
+    name  = "firefox-opaque",
+    match = { class = "firefox$" },
+
+    opacity = "1.0 override 1.0 override",
+})
+
+hl.window_rule({
+    name  = "firefox-glass-when-empty",
+    match = { class = "firefox$", title = "^(Mozilla Firefox|Neuer Tab.*|New Tab.*)$" },
+
+    opacity = "0.92 override 0.85 override",
+})
+
 
 hl.window_rule({
     name  = "xwaylandvideobridge",
