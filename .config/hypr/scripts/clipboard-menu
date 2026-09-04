@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Clipboard-History (cliphist) — floating kitty mit fzf.
+# Gebunden auf Mod+Shift+V (hypr + niri).
+
+if [ "${1:-}" != "--tui" ]; then
+    exec kitty --class menu-float --title "Clipboard" -e "$0" --tui
+fi
+
+if ! command -v cliphist >/dev/null; then
+    echo "cliphist ist nicht installiert. Taste drücken zum Schließen."
+    read -r -n1
+    exit 1
+fi
+
+sel=$(cliphist list | fzf --prompt="Clipboard> " --reverse --no-sort) || exit 0
+printf '%s' "$sel" | cliphist decode | wl-copy

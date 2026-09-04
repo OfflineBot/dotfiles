@@ -198,10 +198,11 @@ Catppuccin Mocha (see `config/theme.lua`):
 * Brightness binds — this desktop has no backlight (`/sys/class/backlight`
   is empty); monitor brightness would need `ddcutil`.
 
-`Mod+N` locks via `hyprlock` (config in `~/.config/hyprlock/`, not in this
-repo). `Mod+T` opens the WireGuard menu, `Mod+Ctrl+V` the clipboard history
-(cliphist) — both are fzf pickers in a floating kitty (`~/.local/bin/vpn-menu`,
-`~/.local/bin/clipboard-menu`, window rule `menu-float` in `config/rules.lua`).
+`Mod+N` locks via `hyprlock` (`hyprlock.conf` next to this file, found via
+the default search path). `Mod+T` opens the WireGuard menu, `Mod+Ctrl+V` the
+clipboard history (cliphist) — both are fzf pickers in a floating kitty
+(`scripts/vpn-menu`, `scripts/clipboard-menu`, window rule `menu-float` in
+`config/rules.lua`).
 `Mod+X` / `Mod+Shift+X` cycle wallpapers from `~/Pictures/wallpapers`
 (`scripts/wallpapers`, symlinked as `~/.local/bin/wallpapers`).
 

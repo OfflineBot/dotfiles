@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# WireGuard-Toggle-Menü — läuft in einem floating kitty mit fzf.
+# Ohne Argument: öffnet das Fenster. --tui: der eigentliche Picker (im kitty).
+# Vorteil gegenüber rofi: die sudo-Passwortabfrage ist sichtbar.
+
+if [ "${1:-}" != "--tui" ]; then
+    exec kitty --class menu-float --title "VPN" -e "$0" --tui
+fi
+
+get_configs() { ls /etc/wireguard/*.conf 2>/dev/null | xargs -I{} basename {} .conf; }
+get_active()  { sudo wg show interfaces 2>/dev/null | tr ' ' '\n'; }
+
+active=$(get_active)
+menu=""
+while IFS= read -r conf; do
+    [ -z "$conf" ] && continue
+    if grep -qx "$conf" <<< "$active"; then
+        menu+=" ${conf} (connected)"$'\n'
+    else
+        menu+="󰌾 ${conf}"$'\n'
+    fi
+done <<< "$(get_configs)"
+
+if [ -z "$menu" ]; then
+    echo "Keine Configs in /etc/wireguard gefunden. Taste drücken zum Schließen."
+    read -r -n1
+    exit 1
+fi
+
+chosen=$(printf '%s' "$menu" | fzf --prompt="WireGuard> " --reverse --no-info) || exit 0
+conf=$(sed 's/^[^ ]* //; s/ (connected)$//' <<< "$chosen")
+
+if grep -qx "$conf" <<< "$active"; then
+    sudo wg-quick down "$conf" \
+        && notify-send "WireGuard" "Disconnected from ${conf}" -i network-vpn-symbolic
+else
+    sudo wg-quick up "$conf" \
+        && notify-send "WireGuard" "Connected to ${conf}" -i network-vpn-acquiring-symbolic
+fi

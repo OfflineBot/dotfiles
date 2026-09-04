@@ -7,11 +7,10 @@ M.browser     = "firefox"
 M.mixer       = "pavucontrol"
 M.fileManager = "nautilus"
 
--- Config liegt bewusst außerhalb des Repos, daher expliziter Pfad
-M.lock = "hyprlock --config $HOME/.config/hyprlock/hyprlock.conf"
+M.lock = "hyprlock"
 
-M.vpnMenu       = "$HOME/.local/bin/vpn-menu"
-M.clipboardMenu = "$HOME/.local/bin/clipboard-menu"
+M.vpnMenu       = "$HOME/.config/hypr/scripts/vpn-menu"
+M.clipboardMenu = "$HOME/.config/hypr/scripts/clipboard-menu"
 
 M.wallpaper = "$HOME/.config/hypr/scripts/wallpapers"
 
