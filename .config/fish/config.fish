@@ -29,24 +29,22 @@ function cff
     fastfetch
 end
 
-function prompt_pwd
-	echo (string replace --regex "^$HOME" "~" (pwd))
-end
-
-function fish_prompt
-	set -l last_status $status
-
-	set -l stat
-	if test $last_status -ne 0
-		set stat (set_color red)"[$last_status]" (set_color normal)
-	end
-    string join '' -- (set_color --bold cba6f7) (prompt_pwd) $stat ' > ' (set_color normal)
-end
+# Prompt liegt jetzt in functions/fish_prompt.fish (+ fish_right_prompt.fish)
 
 fish_add_path /home/offlinebot/.spicetify
 fish_add_path /home/offlinebot/.modular/bin
 
 zoxide init --cmd cd fish | source
+
+# fzf-Bindings: Ctrl+R fuzzy History, Ctrl+T Dateien, Alt+C Verzeichnisse
+if status is-interactive; and command -q fzf
+    fzf --fish | source
+    set -gx FZF_DEFAULT_OPTS "--height 40% --layout=reverse --border=rounded \
+        --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+        --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+        --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+        --color=selected-bg:#45475a,border:#585b70,label:#cdd6f4"
+end
 
 
 # --- wayland env for ssh/tmux shells ------------------------

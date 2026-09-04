@@ -170,17 +170,3 @@ themes {
         }
     }
 }
-
-// ── Sitzungen überleben einen Neustart ───────────────────────────────────
-//
-// Gesetzt vom home_server, damit die Terminals im Browser nach einem
-// Neustart nicht leer dastehen. Die Sicherung des vorigen Standes liegt
-// daneben als config.kdl.vor-home-server.
-//
-// Was zurückkommt: die Aufteilung, die Arbeitsverzeichnisse, die Befehle und
-// der sichtbare Bildschirminhalt. Was *nicht* zurückkommt: ein laufender
-// Prozess. Ein `cargo build`, das beim Ausschalten lief, läuft danach nicht
-// weiter — es steht nur wieder da, wo es stand.
-session_serialization true
-serialize_pane_viewport true
-scrollback_lines_to_serialize 10000
