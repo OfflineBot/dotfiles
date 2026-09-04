@@ -17,6 +17,8 @@ set -g __fish_git_prompt_char_untrackedfiles ' ?'
 set -g __fish_git_prompt_char_stashstate ' *'
 set -g __fish_git_prompt_char_upstream_ahead ' ⇡'
 set -g __fish_git_prompt_char_upstream_behind ' ⇣'
+set -g __fish_git_prompt_char_upstream_equal '' # "=" (synchron) nicht anzeigen
+set -g __fish_git_prompt_char_upstream_diverged ' ⇕'
 set -g __fish_git_prompt_color_branch eba0ac --bold
 set -g __fish_git_prompt_color_dirtystate f9e2af
 set -g __fish_git_prompt_color_stagedstate a6e3a1
