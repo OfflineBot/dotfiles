@@ -10,5 +10,7 @@ also in here: niri and mango configs from trying stuff out, zellij, tmux,
 mako, nvim, micro, btop, bat, fastfetch, zathura and a few wallpapers
 (`Pictures/wallpapers`, used by `hypr/scripts/wallpapers`).
 
-configs live under `.config`, just copy over what you want — `screenshots/`
-is only for this README. `fish_variables` is machine-local and gitignored.
+configs live under `.config`. `./install.sh` links everything with stow and
+installs the packages (pacman, aur via paru, easyeffects via flatpak) —
+or just copy over what you want. `screenshots/` is only for this README,
+`fish_variables` is machine-local and gitignored.
