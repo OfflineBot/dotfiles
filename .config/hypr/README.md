@@ -14,7 +14,7 @@ config/
   input.lua             keyboard, mouse, touchpad
   theme.lua             colours, borders, gaps, rounding, blur
   animations.lua        curves and springs
-  layout.lua            scrolling layout + fallbacks
+  layout.lua            dwindle layout
   rules.lua             window and layer rules
   autostart.lua         awww, quickshell, gsettings, EasyEffects
 binds/
@@ -29,14 +29,15 @@ binds/
   mouse.lua             drag / resize
 ```
 
-`general.layout = "scrolling"` (in `config/theme.lua`) is Hyprland's rebuild
-of niri's column band. Without it the column binds make no sense.
+`general.layout = "dwindle"` (in `config/theme.lua`). The former scrolling
+experiment is gone; the binds below are dwindle binds (`togglesplit`,
+`swapsplit`, `preselect`).
 
 ## Navigation
 
 | Key | Effect | Scope |
 |---|---|---|
-| `Mod+H/L` | column left/right | current workspace |
+| `Mod+H/L` | window left/right | current workspace |
 | `Mod+J/K` | window below/above | current workspace |
 | `Mod+1 … Mod+0` | workspace 1-10 | current monitor |
 | `Mod+Scroll` | next/previous workspace | current monitor |
@@ -54,10 +55,8 @@ Keeping `Mod+J/K` on the monitor needs this in `config/layout.lua`:
 binds = { window_direction_monitor_fallback = false }
 ```
 
-It defaults to **on**, which carries directional focus over the monitor edge.
-With DP-1 sitting directly above DP-2 that turned `Mod+J/K` into a monitor
-switch, while DP-3 (to the right) was unreachable because `Mod+H/L` wraps
-inside the band.
+It defaults to **on**, which carries directional focus over the monitor edge
+and would turn `Mod+H/J/K/L` at the edges into a monitor switch.
 
 While the overview is open, `Mod+HJKL` moves the tile selection instead —
 `binds/window.lua` checks `mons.overview_open()`.
@@ -93,13 +92,15 @@ wins. No wrapping. Hyprland has `focusmonitor l` but no dispatcher that moves
 a window to a neighbour in a direction, which is why the target is resolved
 manually.
 
-For this setup:
+For this setup (all three side by side, left to right DP-1, DP-2, DP-3):
 
 ```
-DP-1: r -> DP-3   d -> DP-2
-DP-2: r -> DP-3   u -> DP-1
-DP-3: l -> DP-2   u -> DP-1
+DP-1: r -> DP-2
+DP-2: l -> DP-1   r -> DP-3
+DP-3: l -> DP-2
 ```
+
+`Alt+J/K` (up/down) have no targets in this arrangement.
 
 Check without pressing anything:
 
@@ -179,24 +180,30 @@ grim -c -s 4 -g "$(hyprctl cursorpos | tr -d ' ') 40x40" /tmp/cursor.png
 
 ## Colours
 
+Catppuccin Mocha (see `config/theme.lua`):
+
 | Role | Colour |
 |---|---|
-| active border | `#a4a9a8` |
-| inactive border | `#484848` |
-| urgent | `#ad401f` |
-| bright | `#d4c9c8` |
-| background | `#201b14` |
+| active border | `#cba6f7` -> `#eba0ac` (gradient) |
+| urgent | `#f38ba8` |
+| text | `#cdd6f4` |
+| background | `#1e1e2e` |
 
 ## Deliberately missing
 
 * `Mod+Escape` (keyboard-shortcuts-inhibit) and `Mod+Shift+Slash` (hotkey
   overlay) have no Hyprland equivalent. Use `hyprctl binds` instead.
-* `Mod+Ctrl+R` (reset-window-height) has no equivalent in the scrolling layout.
+* `Mod+Ctrl+R` (reset-window-height) has no dwindle equivalent.
 * `xwayland-satellite` — Hyprland ships XWayland itself.
+* Brightness binds — this desktop has no backlight (`/sys/class/backlight`
+  is empty); monitor brightness would need `ddcutil`.
 
-Not installed yet: `hyprlock` (`Mod+N`), `swaylock` (`Mod+Alt+L`),
-`brightnessctl` (`Mod+F5`/`F6`), `~/.local/bin/vpn-menu` (`Mod+T`),
-`hyprshutdown` (`Mod+Shift+E`, falls back to `hyprctl dispatch exit`).
+`Mod+N` locks via `hyprlock` (config in `~/.config/hyprlock/`, not in this
+repo). `Mod+T` opens the WireGuard menu, `Mod+Ctrl+V` the clipboard history
+(cliphist) — both are fzf pickers in a floating kitty (`~/.local/bin/vpn-menu`,
+`~/.local/bin/clipboard-menu`, window rule `menu-float` in `config/rules.lua`).
+`Mod+X` / `Mod+Shift+X` cycle wallpapers from `~/Pictures/wallpapers`
+(`scripts/wallpapers`, symlinked as `~/.local/bin/wallpapers`).
 
 ## Testing
 

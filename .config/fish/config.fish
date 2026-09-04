@@ -3,9 +3,11 @@
 
 
 # --- tty colors ---------------------------------------------
-eval (dircolors -c ~/.dircolors | string replace 'LS_COLORS=' 'set -x LS_COLORS ' | string replace ';$' '' )
+if status is-interactive
+    eval (dircolors -c ~/.dircolors | string replace 'LS_COLORS=' 'set -x LS_COLORS ' | string replace ';$' '' )
+end
 
-set -Ux TERMINAL alacritty
+set -gx TERMINAL kitty
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -x GOPROXY direct
@@ -31,19 +33,28 @@ end
 
 # Prompt liegt jetzt in functions/fish_prompt.fish (+ fish_right_prompt.fish)
 
-fish_add_path /home/offlinebot/.spicetify
-fish_add_path /home/offlinebot/.modular/bin
+if status is-interactive
+    zoxide init --cmd cd fish | source
 
-zoxide init --cmd cd fish | source
+    # eza statt ls
+    alias ls "eza --icons --group-directories-first"
+    alias ll "eza --icons --group-directories-first -la"
+    alias la "eza --icons --group-directories-first -a"
+    alias lt "eza --icons --group-directories-first --tree --level=2"
 
-# fzf-Bindings: Ctrl+R fuzzy History, Ctrl+T Dateien, Alt+C Verzeichnisse
-if status is-interactive; and command -q fzf
-    fzf --fish | source
-    set -gx FZF_DEFAULT_OPTS "--height 40% --layout=reverse --border=rounded \
-        --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
-        --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
-        --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
-        --color=selected-bg:#45475a,border:#585b70,label:#cdd6f4"
+    # fzf: Ctrl+R fuzzy History, Ctrl+T Dateien (fd + bat-Preview), Alt+C Verzeichnisse
+    if command -q fzf
+        fzf --fish | source
+        set -gx FZF_DEFAULT_COMMAND "fd --type f --hidden --follow --exclude .git"
+        set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
+        set -gx FZF_CTRL_T_OPTS "--preview 'bat --color=always --style=numbers --line-range=:200 {}'"
+        set -gx FZF_ALT_C_COMMAND "fd --type d --hidden --follow --exclude .git"
+        set -gx FZF_DEFAULT_OPTS "--height 40% --layout=reverse --border=rounded \
+            --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+            --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+            --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+            --color=selected-bg:#45475a,border:#585b70,label:#cdd6f4"
+    end
 end
 
 

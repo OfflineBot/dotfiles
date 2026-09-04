@@ -12,17 +12,8 @@ hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ to
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
     { locked = true, description = "Mute microphone" })
 
----- brightness ----------------------------------------------------------
-
-hl.bind(mod .. " + F5", hl.dsp.exec_cmd(p.brightness .. " set 10%-"),
-    { locked = true, repeating = true, description = "Brightness down" })
-hl.bind(mod .. " + F6", hl.dsp.exec_cmd(p.brightness .. " set 10%+"),
-    { locked = true, repeating = true, description = "Brightness up" })
-
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(p.brightness .. " set 10%-"),
-    { locked = true, repeating = true, description = "Brightness down" })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(p.brightness .. " set 10%+"),
-    { locked = true, repeating = true, description = "Brightness up" })
+-- Brightness-Binds entfernt: kein Backlight auf diesem Rechner
+-- (Desktop, 3x DisplayPort). Monitor-Helligkeit ginge nur via ddcutil.
 
 ---- player --------------------------------------------------------------
 

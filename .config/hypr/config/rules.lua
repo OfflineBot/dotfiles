@@ -77,48 +77,65 @@ hl.window_rule({
     move  = { 20, "monitor_h-120" },
 })
 
+-- floating kitty für die fzf-Menüs (vpn-menu, clipboard-menu, screenshot-menu)
+hl.window_rule({
+    name  = "menu-float",
+    match = { class = "^menu-float$" },
+
+    float  = true,
+    size   = { 640, 400 },
+    center = true,
+})
+
 ---- layer rules ---------------------------------------------------------
 
 hl.layer_rule({
     name  = "blur-quickshell-bar",
     match = { namespace = "^quickshell-bar$" },
-    blur  = true,
+    blur         = true,
+    ignore_alpha = 0.1,
 })
 
 for _, ns in ipairs({ "quickshell-clockpopup", "quickshell-network", "quickshell-launcher" }) do
     hl.layer_rule({
         name  = "blur-" .. ns,
         match = { namespace = "^" .. ns .. "$" },
-        blur  = true,
+        blur         = true,
+        ignore_alpha = 0.1,
     })
 end
 
 hl.layer_rule({
     name  = "blur-quickshell-overview",
     match = { namespace = "^quickshell-overview$" },
-    blur  = true,
+    blur         = true,
+    ignore_alpha = 0.1,
 })
 
 hl.layer_rule({
     name  = "blur-quickshell-tip",
     match = { namespace = "^quickshell-tip$" },
-    blur  = true,
+    blur         = true,
+    ignore_alpha = 0.1,
 })
 
 hl.layer_rule({
     name  = "blur-quickshell-logout",
     match = { namespace = "^quickshell-logout$" },
-    blur  = true,
+    blur         = true,
+    ignore_alpha = 0.1,
 })
 
 hl.layer_rule({
     name  = "blur-notifications",
     match = { namespace = "^notifications$" },
-    blur  = true,
+    blur         = true,
+    ignore_alpha = 0.1,
 })
 
 hl.layer_rule({
     name  = "blur-launcher",
     match = { namespace = "^launcher$" },
-    blur  = true,
+    blur         = true,
+    ignore_alpha = 0.1,
 })

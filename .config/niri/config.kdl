@@ -1,5 +1,5 @@
 cursor {
-    xcursor-theme "Adwaita"
+    xcursor-theme "catppuccin-mocha-dark-cursors"
     xcursor-size 24
 }
 
@@ -72,20 +72,20 @@ layout {
 
     focus-ring {
         width 2
-        active-color "#a4a9a8"
-        inactive-color "#484848"
-        urgent-color "#ad401f"
+        active-color "#cba6f7"
+        inactive-color "#585b70"
+        urgent-color "#f38ba8"
     }
 
     border {
         off
         width 2
-        active-color "#d4c9c8"
-        inactive-color "#484848"
-        urgent-color "#ad401f"
+        active-color "#cba6f7"
+        inactive-color "#585b70"
+        urgent-color "#f38ba8"
     }
 
-    background-color "#201b14"
+    background-color "#1e1e2e"
 }
 
 blur {
@@ -207,23 +207,24 @@ layer-rule {
 }
 
 layer-rule {
-    match namespace="^eww"
-    background-effect {
-        blur true
-        xray false
-    }
-}
-
-layer-rule {
     match namespace=r#"^awww-daemon\.backdrop$"#
     place-within-backdrop true
+}
+
+window-rule {
+    match app-id="^menu-float$"
+    open-floating true
+    default-column-width { fixed 640; }
+    default-window-height { fixed 400; }
 }
 
 // --- autostart ---------------------------------------------
 spawn-at-startup "awww-daemon"
 spawn-at-startup "sh" "-c" "awww-daemon --namespace .backdrop & sleep 0.4; awww img --namespace .backdrop $HOME/.cache/niri-wallpapers/eclipse-blur.jpg"
-spawn-at-startup "xwayland-satellite"
 spawn-at-startup "quickshell"
+spawn-at-startup "sh" "-c" "command -v wl-clip-persist >/dev/null && exec wl-clip-persist --clipboard regular"
+spawn-at-startup "sh" "-c" "command -v cliphist >/dev/null && exec wl-paste --type text --watch cliphist store"
+spawn-at-startup "sh" "-c" "command -v cliphist >/dev/null && exec wl-paste --type image --watch cliphist store"
 spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "gtk-theme" "catppuccin-mocha-maroon-standard+default"
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "color-scheme" "prefer-dark"
@@ -295,20 +296,13 @@ binds {
     Mod+I hotkey-overlay-title="Info panel (quickshell)" { spawn "sh" "-c" "qs ipc call topbar toggleClock \"$(niri msg --json focused-output | jq -r .name)\""; }
     Mod+B hotkey-overlay-title="Toggle topbar (quickshell)" { spawn "sh" "-c" "qs ipc call topbar toggle \"$(niri msg --json focused-output | jq -r .name)\""; }
     Mod+N hotkey-overlay-title="Lock: hyprlock" { spawn "hyprlock"; }
-    Super+Alt+L hotkey-overlay-title="Lock: swaylock" { spawn "swaylock"; }
 
     // --- click burst ---------------------------------------
     F8 repeat=false hotkey-overlay-title="100 right clicks in 1s" { spawn "sh" "-c" "$HOME/.local/bin/autoclicker 100 0xC1 1"; }
     Shift+F8 repeat=false hotkey-overlay-title="100 left clicks in 1s" { spawn "sh" "-c" "$HOME/.local/bin/autoclicker 100 0xC0 1"; }
 
-    // --- brightness ----------------------------------------
-    Mod+F5 allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
-    Mod+F6 allow-when-locked=true { spawn "brightnessctl" "set" "10%+"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
-    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "10%+"; }
-
     // --- volume --------------------------------------------
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
     XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
@@ -328,6 +322,7 @@ binds {
     Alt+F { fullscreen-window; }
     Alt+Backslash { toggle-window-floating; }
     Mod+V { toggle-window-floating; }
+    Mod+Ctrl+V hotkey-overlay-title="Clipboard history" { spawn "sh" "-c" "$HOME/.local/bin/clipboard-menu"; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
     Mod+G { toggle-column-tabbed-display; }
 
@@ -367,6 +362,7 @@ binds {
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
+    Mod+0 { focus-workspace 10; }
 
     Mod+Shift+1 { move-column-to-workspace 1; }
     Mod+Shift+2 { move-column-to-workspace 2; }
@@ -377,6 +373,7 @@ binds {
     Mod+Shift+7 { move-column-to-workspace 7; }
     Mod+Shift+8 { move-column-to-workspace 8; }
     Mod+Shift+9 { move-column-to-workspace 9; }
+    Mod+Shift+0 { move-column-to-workspace 10; }
 
     // --- workspace navigation ------------------------------
     Ctrl+Mod+H { move-column-to-workspace-up; }
@@ -412,11 +409,12 @@ binds {
     Ctrl+Alt+Down  { set-window-height "+50"; }
 
     // --- screenshots ---------------------------------------
-    Print { screenshot; }
-    Ctrl+Print { screenshot-screen; }
+    Print { spawn "sh" "-c" "mkdir -p ~/Pictures/Screenshots && grim -g \"$(slurp)\" ~/Pictures/Screenshots/\"Screenshot from $(date '+%Y-%m-%d %H-%M-%S').png\""; }
+    Shift+Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && notify-send -a Screenshot Screenshot 'Copied to clipboard'"; }
+    Ctrl+Print { spawn "sh" "-c" "mkdir -p ~/Pictures/Screenshots && grim -o \"$(niri msg --json focused-output | jq -r .name)\" ~/Pictures/Screenshots/\"Screenshot from $(date '+%Y-%m-%d %H-%M-%S').png\""; }
     Alt+Print { screenshot-window; }
-    Mod+Print { spawn "sh" "-c" "grim -g \"$(slurp)\" ~/Pictures/Screenshots-Super/\"Screenshot from $(date '+%Y-%m-%d %H-%M-%S').png\""; }
-    Mod+Shift+Print { screenshot; }
+    Mod+Print { spawn "sh" "-c" "$HOME/.config/hypr/scripts/screenshot-menu.sh"; }
+    Mod+Shift+Print { spawn "sh" "-c" "mkdir -p ~/Pictures/Screenshots && grim -g \"$(slurp)\" ~/Pictures/Screenshots/\"Screenshot from $(date '+%Y-%m-%d %H-%M-%S').png\""; }
 
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
     Mod+Shift+E { quit; }

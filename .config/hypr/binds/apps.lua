@@ -41,5 +41,6 @@ hl.bind(mod .. " + SHIFT + X", hl.dsp.exec_cmd(p.wallpaper .. " random"),
 
 hl.bind(mod .. " + N", hl.dsp.exec_cmd(p.lock),
     { description = "Lock: hyprlock" })
-hl.bind(mod .. " + ALT + L", hl.dsp.exec_cmd(p.altLock),
-    { description = "Lock: swaylock" })
+
+hl.bind(mod .. " + CTRL + V", hl.dsp.exec_cmd(p.clipboardMenu),
+    { description = "Clipboard history (cliphist)" })

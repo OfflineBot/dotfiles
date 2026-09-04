@@ -7,16 +7,14 @@ M.browser     = "firefox"
 M.mixer       = "pavucontrol"
 M.fileManager = "nautilus"
 
-M.lock       = "hyprlock"
-M.altLock    = "swaylock"
-M.brightness = "brightnessctl"
+M.lock = "hyprlock"
 
-M.vpnMenu = "$HOME/.local/bin/vpn-menu"
+M.vpnMenu       = "$HOME/.local/bin/vpn-menu"
+M.clipboardMenu = "$HOME/.local/bin/clipboard-menu"
 
-M.wallpaper = "$HOME/.config/hypr/scripts/wallpaper.sh"
+M.wallpaper = "$HOME/.config/hypr/scripts/wallpapers"
 
-M.screenshotDir      = "$HOME/Pictures/Screenshots"
-M.screenshotDirSuper = "$HOME/Pictures/Screenshots-Super"
+M.screenshotDir = "$HOME/Pictures/Screenshots"
 
 M.focusedMonitor = [[$(hyprctl -j monitors | jq -r '.[] | select(.focused) | .name')]]
 
