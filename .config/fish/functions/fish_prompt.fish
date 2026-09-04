@@ -1,10 +1,9 @@
 # Catppuccin-Mocha-Prompt — mauve/maroon, passend zu Hyprland-Bordern,
 # zellij und kitty. Glyphs brauchen eine Nerd Font (kitty: FiraCode NF).
 #
-#   ╭─  ~/.dotfiles on  main !1 ⇡2
-#   ╰─❯
+#    ~/.dotfiles  main !1 ⇡2 ❯
 #
-# Bei Fehlern wird der Pfeil rot und zeigt den Exit-Code:  ╰─✘ 127 ❯
+# Bei Fehlern wird der Pfeil rot und zeigt den Exit-Code:  ✘ 127 ❯
 
 # fish_git_prompt-Verhalten (läuft einmal beim Autoload)
 set -g __fish_git_prompt_showdirtystate 1
@@ -37,19 +36,17 @@ function fish_prompt
         set parent ''
     end
 
-    echo -n -s (set_color eba0ac) '╭─ ' (set_color cba6f7) ' ' \
+    echo -n -s (set_color cba6f7) ' ' \
         (set_color 9399b2) $parent (set_color --bold cba6f7) $leaf (set_color normal)
 
     set -l git (fish_git_prompt '%s')
     if test -n "$git"
-        echo -n -s (set_color 6c7086) ' on ' (set_color eba0ac) ' ' $git (set_color normal)
+        echo -n -s (set_color eba0ac) '  ' $git (set_color normal)
     end
 
-    echo
-
     if test $last_status -ne 0
-        echo -n -s (set_color eba0ac) '╰─' (set_color --bold f38ba8) '✘ ' $last_status ' ❯ ' (set_color normal)
+        echo -n -s (set_color --bold f38ba8) ' ✘ ' $last_status ' ❯ ' (set_color normal)
     else
-        echo -n -s (set_color eba0ac) '╰─' (set_color --bold cba6f7) '❯ ' (set_color normal)
+        echo -n -s (set_color --bold eba0ac) ' ❯ ' (set_color normal)
     end
 end
