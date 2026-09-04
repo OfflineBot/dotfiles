@@ -295,7 +295,7 @@ binds {
     Mod+M hotkey-overlay-title="Logout (quickshell)" { spawn "qs" "ipc" "call" "logout" "toggle"; }
     Mod+I hotkey-overlay-title="Info panel (quickshell)" { spawn "sh" "-c" "qs ipc call topbar toggleClock \"$(niri msg --json focused-output | jq -r .name)\""; }
     Mod+B hotkey-overlay-title="Toggle topbar (quickshell)" { spawn "sh" "-c" "qs ipc call topbar toggle \"$(niri msg --json focused-output | jq -r .name)\""; }
-    Mod+N hotkey-overlay-title="Lock: hyprlock" { spawn "hyprlock"; }
+    Mod+N hotkey-overlay-title="Lock: hyprlock" { spawn "sh" "-c" "hyprlock --config $HOME/.config/hyprlock/hyprlock.conf"; }
 
     // --- click burst ---------------------------------------
     F8 repeat=false hotkey-overlay-title="100 right clicks in 1s" { spawn "sh" "-c" "$HOME/.local/bin/autoclicker 100 0xC1 1"; }
