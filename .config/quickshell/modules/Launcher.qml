@@ -81,9 +81,7 @@ Scope {
         readonly property int totalCount: results.length + (query !== "" ? 1 : 0)
 
         implicitWidth: root.boxWidth
-        implicitHeight: 20 + search.implicitHeight
-                        + (results.length > 0 ? 8 + listH : 0)
-                        + (query !== "" ? 8 + root.rowH : 0) + 20
+        implicitHeight: col.implicitHeight + 16
         Behavior on implicitHeight {
             NumberAnimation { duration: 110; easing.type: Easing.OutCubic }
         }
@@ -246,9 +244,12 @@ Scope {
             }
 
             Column {
-                anchors.fill: parent
-                anchors.margins: 20
-                spacing: 8
+                id: col
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 8
+                spacing: 6
 
                 TextField {
                     id: search
@@ -256,14 +257,20 @@ Scope {
                     placeholderText: "Search…"
                     placeholderTextColor: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.4)
                     color: root.textColor
-                    font.pixelSize: 15
-                    padding: 8
+                    font.pixelSize: 17
+                    padding: 10
+                    leftPadding: 38
 
-                    background: Rectangle {
-                        color: "transparent"
-                        border.color: root.searchBorderColor
-                        border.width: root.borderWidth
-                        radius: 8
+                    // Spotlight-Look: keine eigene Box, nur Lupe + Text
+                    background: null
+
+                    Text {
+                        x: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "󰍉"
+                        font.family: "MesloLGS Nerd Font Mono"
+                        font.pixelSize: 18
+                        color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.5)
                     }
 
                     onTextChanged: panel.updateResults()
@@ -275,6 +282,13 @@ Scope {
                     Keys.onReturnPressed: panel.launchSelected()
                     Keys.onEnterPressed:  panel.launchSelected()
                     Keys.onEscapePressed: root.hide()
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    visible: panel.query !== ""
+                    color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
                 }
 
                 ListView {
