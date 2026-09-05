@@ -271,19 +271,10 @@ Scope {
                     color: root.textColor
                     font.pixelSize: 17
                     padding: 10
-                    leftPadding: 38
+                    leftPadding: 12
 
-                    // Spotlight-Look: keine eigene Box, nur Lupe + Text
+                    // Spotlight-Look: keine eigene Box, nur Text
                     background: null
-
-                    Text {
-                        x: 10
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: "󰍉"
-                        font.family: "MesloLGS Nerd Font Mono"
-                        font.pixelSize: 18
-                        color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.5)
-                    }
 
                     onTextChanged: panel.updateResults()
 
