@@ -15,7 +15,7 @@ hl.bind(mod .. " + SHIFT + Space", hl.dsp.exec_cmd(p.qs("scriptlauncher", "toggl
 hl.bind(mod .. " + M", hl.dsp.exec_cmd(p.qs("logout", "toggle")),
     { description = "Logout overlay" })
 
-hl.bind(mod .. " + I", hl.dsp.exec_cmd(p.qsOnFocusedMonitor("topbar", "toggleClock")),
+hl.bind(mod .. " + R", hl.dsp.exec_cmd(p.qsOnFocusedMonitor("topbar", "toggleClock")),
     { description = "Info panel" })
 hl.bind(mod .. " + B", hl.dsp.exec_cmd(p.qsOnFocusedMonitor("topbar", "toggle")),
     { description = "Toggle topbar" })

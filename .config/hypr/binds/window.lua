@@ -84,7 +84,7 @@ hl.bind(mod .. " + SHIFT + K", hl.dsp.window.move({ direction = "up" }),
 
 ---- split tree and window size ------------------------------------------
 
-hl.bind(mod .. " + R", hl.dsp.layout("togglesplit"),
+hl.bind(mod .. " + I", hl.dsp.layout("togglesplit"),
     { description = "Rotate split" })
 
 hl.bind(mod .. " + SHIFT + R", hl.dsp.layout("swapsplit"),
