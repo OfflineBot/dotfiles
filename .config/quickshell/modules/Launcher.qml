@@ -74,6 +74,8 @@ Scope {
         property var results: []
         property int selectedIndex: 0
         property string query: ""
+        property bool queryIsUrl: false
+        property string queryUrl: ""
 
         readonly property int visibleRows: Math.min(results.length, root.maxRows)
         readonly property int listH: visibleRows * root.rowH
@@ -132,7 +134,13 @@ Scope {
             panel.query = q
 
             // leer -> nichts anzeigen
-            if (q === "") { panel.results = []; panel.selectedIndex = 0; return }
+            if (q === "") {
+                panel.results = []
+                panel.selectedIndex = 0
+                panel.queryIsUrl = false
+                panel.queryUrl = ""
+                return
+            }
 
             let items = []
 
@@ -148,10 +156,12 @@ Scope {
                 } catch (err) {}
             }
 
-            // direkte URLs ("heise.de" -> öffnen)
-            if (q.includes(".") && !q.includes(" ") && q.length > 3 && !/^[0-9.,]+$/.test(q))
-                items.push({ kind: "web", name: q + " öffnen",
-                             url: (q.startsWith("http") ? q : "https://" + q), s: 6400 })
+            // sieht die Eingabe wie eine URL aus, wird die Aktions-Zeile
+            // unten zum "öffnen" statt zur DuckDuckGo-Suche
+            panel.queryIsUrl = q.includes(".") && !q.includes(" ")
+                              && q.length > 3 && !/^[0-9.,]+$/.test(q)
+            panel.queryUrl = panel.queryIsUrl
+                             ? (q.startsWith("http") ? q : "https://" + q) : ""
 
             // Apps
             const all = DesktopEntries.applications.values
@@ -194,7 +204,9 @@ Scope {
 
         function launchSelected() {
             if (panel.selectedIndex >= panel.results.length) {
-                if (panel.query !== "")
+                if (panel.queryIsUrl)
+                    panel.openUrl(panel.queryUrl)
+                else if (panel.query !== "")
                     panel.openUrl("https://duckduckgo.com/?q=" + encodeURIComponent(panel.query))
                 root.hide()
                 return
@@ -353,7 +365,13 @@ Scope {
                     }
                 }
 
-                // ---- Suche als eigene Zeile unter der Liste ----
+                // ---- Aktion als eigene, abgesetzte Zeile darunter ----
+                Item {
+                    width: parent.width
+                    height: 4
+                    visible: panel.query !== ""
+                }
+
                 Rectangle {
                     id: searchAction
                     width: parent.width
@@ -370,7 +388,7 @@ Scope {
 
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "󰍉"
+                            text: panel.queryIsUrl ? "󰖟" : "󰍉"
                             font.family: "MesloLGS Nerd Font Mono"
                             font.pixelSize: 17
                             color: panel.selectedIndex >= panel.results.length
@@ -378,7 +396,8 @@ Scope {
                         }
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "Mit DuckDuckGo suchen: " + panel.query
+                            text: panel.queryIsUrl ? panel.query + " öffnen"
+                                                   : "Mit DuckDuckGo suchen: " + panel.query
                             font.pixelSize: 14
                             elide: Text.ElideRight
                             width: searchAction.width - 50
