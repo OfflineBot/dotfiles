@@ -19,7 +19,7 @@ Scope {
 
     property int boxWidth: 460
     property int rowH: 36
-    property int maxRows: 12
+    property int maxRows: 5
 
     property bool shown: false
 
