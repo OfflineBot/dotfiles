@@ -284,6 +284,106 @@ Scope {
                     color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
                 }
 
+                // ---- audio: master ----------------------
+                RowLayout {
+                    width: parent.width
+                    spacing: 12
+                    visible: root.defaultSink !== null && !!root.defaultSink.audio
+
+                    Text {
+                        Layout.preferredWidth: 22
+                        horizontalAlignment: Text.AlignHCenter
+                        text: (root.defaultSink && root.defaultSink.audio
+                               && root.defaultSink.audio.muted) ? "󰖁" : "󰕾"
+                        font.family: "MesloLGS Nerd Font Mono"
+                        font.pixelSize: 18
+                        color: (root.defaultSink && root.defaultSink.audio
+                                && root.defaultSink.audio.muted)
+                               ? root.mutedColor : root.textColor
+                        MouseArea {
+                            anchors.fill: parent
+                            anchors.margins: -6
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: if (root.defaultSink && root.defaultSink.audio)
+                                root.defaultSink.audio.muted = !root.defaultSink.audio.muted
+                        }
+                    }
+                    ThemeSlider {
+                        Layout.fillWidth: true
+                        value: (root.defaultSink && root.defaultSink.audio)
+                               ? root.defaultSink.audio.volume : 0
+                        fillColor: root.accentColor
+                        onMoved: (v) => { if (root.defaultSink && root.defaultSink.audio)
+                            root.defaultSink.audio.volume = v }
+                    }
+                    Text {
+                        Layout.preferredWidth: 38
+                        horizontalAlignment: Text.AlignRight
+                        text: ((root.defaultSink && root.defaultSink.audio)
+                               ? Math.round(root.defaultSink.audio.volume * 100) : 0) + "%"
+                        color: root.textColor
+                        opacity: 0.7
+                        font.family: "FiraCode Nerd Font Mono"
+                        font.pixelSize: 12
+                    }
+                }
+
+                // ---- audio: output devices --------------
+                Column {
+                    width: parent.width
+                    spacing: 6
+                    visible: root.audioSinks.length > 1
+
+                    Repeater {
+                        model: root.audioSinks
+
+                        delegate: Item {
+                            id: sinkRow
+                            required property var modelData
+                            width: parent.width
+                            implicitHeight: 22
+                            readonly property bool isDefault:
+                                root.defaultSink && modelData.id === root.defaultSink.id
+
+                            RowLayout {
+                                anchors.fill: parent
+                                spacing: 12
+
+                                Text {
+                                    Layout.preferredWidth: 22
+                                    horizontalAlignment: Text.AlignHCenter
+                                    text: sinkRow.isDefault ? "󰄴" : "󰄰"
+                                    font.family: "MesloLGS Nerd Font Mono"
+                                    font.pixelSize: 14
+                                    color: sinkRow.isDefault ? root.accentColor : root.textColor
+                                    opacity: sinkRow.isDefault ? 1.0 : 0.5
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: root.nodeLabel(sinkRow.modelData)
+                                    elide: Text.ElideRight
+                                    color: root.textColor
+                                    opacity: sinkRow.isDefault ? 0.95 : 0.6
+                                    font.family: "FiraCode Nerd Font Mono"
+                                    font.pixelSize: 12
+                                }
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: Pipewire.preferredDefaultAudioSink = sinkRow.modelData
+                            }
+                        }
+                    }
+                }
+
+                // ---- separator --------------------------
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
+                }
+
                 // ---- media: alle Quellen ----------------
                 Column {
                     width: parent.width
@@ -554,105 +654,6 @@ Scope {
                     }
                 }
 
-                // ---- separator --------------------------
-                Rectangle {
-                    width: parent.width
-                    height: 1
-                    color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
-                }
-
-                // ---- audio: master ----------------------
-                RowLayout {
-                    width: parent.width
-                    spacing: 12
-                    visible: root.defaultSink !== null && !!root.defaultSink.audio
-
-                    Text {
-                        Layout.preferredWidth: 22
-                        horizontalAlignment: Text.AlignHCenter
-                        text: (root.defaultSink && root.defaultSink.audio
-                               && root.defaultSink.audio.muted) ? "󰖁" : "󰕾"
-                        font.family: "MesloLGS Nerd Font Mono"
-                        font.pixelSize: 18
-                        color: (root.defaultSink && root.defaultSink.audio
-                                && root.defaultSink.audio.muted)
-                               ? root.mutedColor : root.textColor
-                        MouseArea {
-                            anchors.fill: parent
-                            anchors.margins: -6
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: if (root.defaultSink && root.defaultSink.audio)
-                                root.defaultSink.audio.muted = !root.defaultSink.audio.muted
-                        }
-                    }
-                    ThemeSlider {
-                        Layout.fillWidth: true
-                        value: (root.defaultSink && root.defaultSink.audio)
-                               ? root.defaultSink.audio.volume : 0
-                        fillColor: root.accentColor
-                        onMoved: (v) => { if (root.defaultSink && root.defaultSink.audio)
-                            root.defaultSink.audio.volume = v }
-                    }
-                    Text {
-                        Layout.preferredWidth: 38
-                        horizontalAlignment: Text.AlignRight
-                        text: ((root.defaultSink && root.defaultSink.audio)
-                               ? Math.round(root.defaultSink.audio.volume * 100) : 0) + "%"
-                        color: root.textColor
-                        opacity: 0.7
-                        font.family: "FiraCode Nerd Font Mono"
-                        font.pixelSize: 12
-                    }
-                }
-
-                // ---- audio: output devices --------------
-                Column {
-                    width: parent.width
-                    spacing: 6
-                    visible: root.audioSinks.length > 1
-
-                    Repeater {
-                        model: root.audioSinks
-
-                        delegate: Item {
-                            id: sinkRow
-                            required property var modelData
-                            width: parent.width
-                            implicitHeight: 22
-                            readonly property bool isDefault:
-                                root.defaultSink && modelData.id === root.defaultSink.id
-
-                            RowLayout {
-                                anchors.fill: parent
-                                spacing: 12
-
-                                Text {
-                                    Layout.preferredWidth: 22
-                                    horizontalAlignment: Text.AlignHCenter
-                                    text: sinkRow.isDefault ? "󰄴" : "󰄰"
-                                    font.family: "MesloLGS Nerd Font Mono"
-                                    font.pixelSize: 14
-                                    color: sinkRow.isDefault ? root.accentColor : root.textColor
-                                    opacity: sinkRow.isDefault ? 1.0 : 0.5
-                                }
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: root.nodeLabel(sinkRow.modelData)
-                                    elide: Text.ElideRight
-                                    color: root.textColor
-                                    opacity: sinkRow.isDefault ? 0.95 : 0.6
-                                    font.family: "FiraCode Nerd Font Mono"
-                                    font.pixelSize: 12
-                                }
-                            }
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: Pipewire.preferredDefaultAudioSink = sinkRow.modelData
-                            }
-                        }
-                    }
-                }
 
 
             }
