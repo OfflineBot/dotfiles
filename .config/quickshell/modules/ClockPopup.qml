@@ -20,7 +20,7 @@ Scope {
     property int barMargin: 8
     property bool active: false
 
-    property int boxW: 410
+    property int boxW: 520
     property int gap: 8
     property int radius: 14
 
@@ -100,6 +100,22 @@ Scope {
         if (!n) return "?"
         return n.nickname || n.description || n.name || "?"
     }
+
+    // MPRIS-Player zu einem Stream-Namen finden (fuer Play/Pause pro App)
+    function playerFor(label) {
+        const l = (label || "").toLowerCase()
+        const ps = Mpris.players ? Mpris.players.values : []
+        for (let i = 0; i < ps.length; i++) {
+            const id = ((ps[i].identity || "") + " " + (ps[i].desktopEntry || "")).toLowerCase()
+            if (id.indexOf(l) !== -1
+                || (ps[i].identity && l.indexOf(ps[i].identity.toLowerCase()) !== -1))
+                return ps[i]
+        }
+        return null
+    }
+
+    readonly property bool hasSpotifyStream:
+        audioStreams.some(n => (nodeLabel(n) || "").toLowerCase().indexOf("spotify") !== -1)
 
     // ---- media (MPRIS) ----------------------------------
     readonly property var player: {
@@ -599,7 +615,51 @@ Scope {
                 Column {
                     width: parent.width
                     spacing: 8
-                    visible: root.audioStreams.length > 0
+
+                    // Spotify fest verdrahtet: Play/Pause wenn es laeuft,
+                    // Starten wenn nicht — auch ganz ohne aktiven Stream
+                    RowLayout {
+                        width: parent.width
+                        spacing: 12
+                        visible: !root.hasSpotifyStream
+
+                        Text {
+                            Layout.preferredWidth: 22
+                            horizontalAlignment: Text.AlignHCenter
+                            text: "󰓇"
+                            font.family: "MesloLGS Nerd Font Mono"
+                            font.pixelSize: 15
+                            color: root.textColor
+                            opacity: 0.85
+                        }
+                        Text {
+                            Layout.fillWidth: true
+                            readonly property var pl: root.playerFor("spotify")
+                            text: pl ? "Spotify" : "Spotify starten"
+                            color: root.textColor
+                            opacity: 0.75
+                            font.family: "FiraCode Nerd Font Mono"
+                            font.pixelSize: 12
+                        }
+                        Text {
+                            readonly property var pl: root.playerFor("spotify")
+                            text: pl ? ((pl.playbackState === MprisPlaybackState.Playing)
+                                        ? "󰏤" : "󰐊")
+                                     : "󰐊"
+                            font.family: "MesloLGS Nerd Font Mono"
+                            font.pixelSize: 16
+                            color: root.accentColor
+                            MouseArea {
+                                anchors.fill: parent
+                                anchors.margins: -6
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (parent.pl) parent.pl.togglePlaying()
+                                    else Quickshell.execDetached(["spotify-launcher"])
+                                }
+                            }
+                        }
+                    }
 
                     Repeater {
                         model: root.audioStreams
@@ -637,6 +697,22 @@ Scope {
                                 opacity: 0.75
                                 font.family: "FiraCode Nerd Font Mono"
                                 font.pixelSize: 12
+                            }
+                            Text {
+                                readonly property var pl:
+                                    root.playerFor(root.nodeLabel(streamRow.modelData))
+                                visible: pl !== null
+                                text: (pl && pl.playbackState === MprisPlaybackState.Playing)
+                                      ? "󰏤" : "󰐊"
+                                font.family: "MesloLGS Nerd Font Mono"
+                                font.pixelSize: 16
+                                color: root.accentColor
+                                MouseArea {
+                                    anchors.fill: parent
+                                    anchors.margins: -6
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: if (parent.pl) parent.pl.togglePlaying()
+                                }
                             }
                             ThemeSlider {
                                 Layout.fillWidth: true
