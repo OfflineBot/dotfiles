@@ -100,7 +100,13 @@ Scope {
 
                     Tray {
                         anchors.verticalCenter: parent.verticalCenter
+                        screen: bar.modelData
+                        barHeight: root.barHeight
+                        barMargin: root.barMargin
+                        backgroundOpacity: root.backgroundOpacity
                         textColor: root.textColor
+                        backgroundColor: root.backgroundColor
+                        borderColor: root.borderColor
                     }
                     Network {
                         anchors.verticalCenter: parent.verticalCenter
