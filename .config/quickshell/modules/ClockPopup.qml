@@ -583,6 +583,32 @@ Scope {
                             Row {
                                 spacing: 14
 
+                                // Mute wirkt direkt am Pipewire-Stream — funktioniert
+                                // auch, wenn die Seite keine Media-Session hat und
+                                // Pause deshalb ins Leere geht
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    readonly property bool muted:
+                                        mediaRow.streams.length > 0 && mediaRow.streams[0].audio
+                                        ? mediaRow.streams[0].audio.muted : false
+                                    visible: mediaRow.streams.length > 0
+                                    text: muted ? "\u{f077f}" : "\u{f075a}"
+                                    font.family: "MesloLGS Nerd Font Mono"
+                                    font.pixelSize: 16
+                                    color: muted ? root.mutedColor : root.textColor
+                                    opacity: 0.85
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        anchors.margins: -6
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            const m = !parent.muted
+                                            for (const n of mediaRow.streams)
+                                                if (n.audio) n.audio.muted = m
+                                        }
+                                    }
+                                }
+
                                 Text {
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "\u{f04ae}"
