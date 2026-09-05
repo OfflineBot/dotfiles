@@ -60,6 +60,10 @@ hl.config({
         disable_splash_rendering = true,
         background_color        = colors.bg,
         force_default_wallpaper = 0,
+
+        -- Stirbt der Locker im gesperrten Zustand, darf ein neu gestartetes
+        -- hyprlock (Mod+N) die Sperre übernehmen statt auszusperren.
+        allow_session_lock_restore = true,
     },
 })
 
