@@ -10,6 +10,13 @@ hl.on("hyprland.start", function()
 
     hl.exec_cmd("systemctl --user restart xdg-desktop-portal.service")
 
+    -- Die Session aktiviert graphical-session.target nicht von selbst;
+    -- ohne das starten die daran haengenden User-Units (easyeffects,
+    -- xwayland-satellite, ...) nach einem Reboot nie. Direkt starten ist
+    -- verboten (RefuseManualStart), daher zieht unser wayland-session.target
+    -- (~/.config/systemd/user/) es per BindsTo hoch.
+    hl.exec_cmd("systemctl --user start wayland-session.target")
+
     hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-mocha-maroon-standard+default'")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
 

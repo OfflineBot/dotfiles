@@ -230,6 +230,7 @@ spawn-at-startup "sh" "-c" "command -v wl-clip-persist >/dev/null && exec wl-cli
 spawn-at-startup "sh" "-c" "command -v cliphist >/dev/null && exec wl-paste --type text --watch cliphist store"
 spawn-at-startup "sh" "-c" "command -v cliphist >/dev/null && exec wl-paste --type image --watch cliphist store"
 spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
+spawn-at-startup "systemctl" "--user" "start" "wayland-session.target"
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "gtk-theme" "catppuccin-mocha-maroon-standard+default"
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "color-scheme" "prefer-dark"
 
