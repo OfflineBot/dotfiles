@@ -212,6 +212,12 @@ layer-rule {
 }
 
 window-rule {
+    match app-id="^Spotify$"
+    open-on-workspace "scratch"
+    open-focused false
+}
+
+window-rule {
     match app-id="^menu-float$"
     open-floating true
     default-column-width { fixed 640; }

@@ -77,6 +77,15 @@ hl.window_rule({
     move  = { 20, "monitor_h-120" },
 })
 
+-- Spotify startet unsichtbar auf dem Scratchpad — steuerbar übers
+-- Mod+R-Panel, sichtbar per Mod+Ctrl+A
+hl.window_rule({
+    name  = "spotify-scratchpad",
+    match = { class = "^Spotify$" },
+
+    workspace = "special:scratch silent",
+})
+
 -- floating kitty für die fzf-Menüs (vpn-menu, clipboard-menu, screenshot-menu)
 hl.window_rule({
     name  = "menu-float",
