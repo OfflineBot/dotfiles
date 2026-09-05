@@ -114,8 +114,37 @@ Scope {
         return null
     }
 
+    // Streams: Tab-/Medientitel aus media.name, App-Name als Fallback;
+    // identische Eintraege (z.B. doppelte Spotify-Nodes) werden gruppiert
+    function streamTitle(n) {
+        let media = ""
+        try { media = String((n.properties && n.properties["media.name"]) || "") } catch (e) {}
+        const app = nodeLabel(n)
+        if (media && media !== "AudioStream" && media !== "Playback"
+            && media.toLowerCase() !== app.toLowerCase())
+            return media
+        return app
+    }
+
+    readonly property var streamGroups: {
+        const out = []
+        const idx = {}
+        for (const n of audioStreams) {
+            const label = streamTitle(n)
+            const app = nodeLabel(n)
+            const key = app + "|" + label
+            if (idx[key] === undefined) {
+                idx[key] = out.length
+                out.push({ label: label, app: app, nodes: [n] })
+            } else {
+                out[idx[key]].nodes.push(n)
+            }
+        }
+        return out
+    }
+
     readonly property bool hasSpotifyStream:
-        audioStreams.some(n => (nodeLabel(n) || "").toLowerCase().indexOf("spotify") !== -1)
+        streamGroups.some(g => (g.app + " " + g.label).toLowerCase().indexOf("spotify") !== -1)
 
     // ---- media (MPRIS, alle Quellen) --------------------
     readonly property var mprisList: Mpris.players ? [...Mpris.players.values] : []
@@ -656,7 +685,7 @@ Scope {
                     }
 
                     Repeater {
-                        model: root.audioStreams
+                        model: root.streamGroups
 
                         delegate: RowLayout {
                             id: streamRow
@@ -664,28 +693,37 @@ Scope {
                             width: parent.width
                             spacing: 12
 
+                            readonly property var node: modelData.nodes[0]
+                            readonly property bool muted: node && node.audio ? node.audio.muted : false
+
+                            function setVolume(v) {
+                                for (const n of streamRow.modelData.nodes)
+                                    if (n.audio) n.audio.volume = v
+                            }
+                            function toggleMute() {
+                                const m = !streamRow.muted
+                                for (const n of streamRow.modelData.nodes)
+                                    if (n.audio) n.audio.muted = m
+                            }
+
                             Text {
                                 Layout.preferredWidth: 22
                                 horizontalAlignment: Text.AlignHCenter
-                                text: (streamRow.modelData.audio
-                                       && streamRow.modelData.audio.muted) ? "󰝟" : "󰝚"
+                                text: streamRow.muted ? "󰝟" : "󰝚"
                                 font.family: "MesloLGS Nerd Font Mono"
                                 font.pixelSize: 15
-                                color: (streamRow.modelData.audio
-                                        && streamRow.modelData.audio.muted)
-                                       ? root.mutedColor : root.textColor
+                                color: streamRow.muted ? root.mutedColor : root.textColor
                                 opacity: 0.85
                                 MouseArea {
                                     anchors.fill: parent
                                     anchors.margins: -6
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: if (streamRow.modelData.audio)
-                                        streamRow.modelData.audio.muted = !streamRow.modelData.audio.muted
+                                    onClicked: streamRow.toggleMute()
                                 }
                             }
                             Text {
-                                Layout.preferredWidth: 90
-                                text: root.nodeLabel(streamRow.modelData)
+                                Layout.preferredWidth: 170
+                                text: streamRow.modelData.label
                                 elide: Text.ElideRight
                                 color: root.textColor
                                 opacity: 0.75
@@ -694,7 +732,8 @@ Scope {
                             }
                             Text {
                                 readonly property var pl:
-                                    root.playerFor(root.nodeLabel(streamRow.modelData))
+                                    root.playerFor(streamRow.modelData.app)
+                                    || root.playerFor(streamRow.modelData.label)
                                 visible: pl !== null
                                 text: (pl && pl.playbackState === MprisPlaybackState.Playing)
                                       ? "󰏤" : "󰐊"
@@ -710,16 +749,16 @@ Scope {
                             }
                             ThemeSlider {
                                 Layout.fillWidth: true
-                                value: streamRow.modelData.audio ? streamRow.modelData.audio.volume : 0
+                                value: (streamRow.node && streamRow.node.audio)
+                                       ? streamRow.node.audio.volume : 0
                                 fillColor: root.accentColor
-                                onMoved: (v) => { if (streamRow.modelData.audio)
-                                    streamRow.modelData.audio.volume = v }
+                                onMoved: (v) => streamRow.setVolume(v)
                             }
                             Text {
                                 Layout.preferredWidth: 38
                                 horizontalAlignment: Text.AlignRight
-                                text: (streamRow.modelData.audio
-                                       ? Math.round(streamRow.modelData.audio.volume * 100) : 0) + "%"
+                                text: ((streamRow.node && streamRow.node.audio)
+                                       ? Math.round(streamRow.node.audio.volume * 100) : 0) + "%"
                                 color: root.textColor
                                 opacity: 0.7
                                 font.family: "FiraCode Nerd Font Mono"
