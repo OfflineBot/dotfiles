@@ -636,34 +636,14 @@ Scope {
                                     enabled: playing || mediaRow.modelData.canPlay === true
                                     opacity: enabled ? 1.0 : 0.25
 
-                                    // Firefox-Bug: manche Sessions ignorieren Pause.
-                                    // Wenn nach 0.8s immer noch gespielt wird, muten
-                                    // wir den Stream als Ersatz (Play macht es rueckgaengig).
-                                    Timer {
-                                        id: pauseFallback
-                                        interval: 800
-                                        onTriggered: {
-                                            if (mediaRow.modelData.playbackState === MprisPlaybackState.Playing)
-                                                for (const n of mediaRow.streams)
-                                                    if (n.audio) n.audio.muted = true
-                                        }
-                                    }
-
                                     MouseArea {
                                         anchors.fill: parent
                                         anchors.margins: -6
                                         enabled: parent.enabled
                                         cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            if (parent.playing) {
-                                                mediaRow.modelData.pause()
-                                                pauseFallback.restart()
-                                            } else {
-                                                for (const n of mediaRow.streams)
-                                                    if (n.audio) n.audio.muted = false
-                                                mediaRow.modelData.play()
-                                            }
-                                        }
+                                        onClicked: parent.playing
+                                                   ? mediaRow.modelData.pause()
+                                                   : mediaRow.modelData.play()
                                     }
                                 }
                                 Text {
