@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.SystemTray
 import Quickshell.Wayland
 import Quickshell.Widgets
@@ -46,6 +47,36 @@ Row {
         tipWindow.margins.left = left
     }
 
+    // ---- Linksklick: existierendes Fenster der App suchen und dorthin
+    // springen (Workspace-Wechsel inklusive); ohne Treffer oder unter niri
+    // faellt es auf das normale activate() der App zurueck.
+    readonly property string focusScript:
+        "q=$(printf %s \"$1\" | tr -d ' '); t=$(printf %s \"$2\" | tr -d ' '); " +
+        "addr=$(hyprctl -j clients 2>/dev/null | jq -r --arg q \"$q\" --arg t \"$t\" " +
+        "'[.[] | (.class|ascii_downcase|gsub(\" \";\"\")) as $cl | select($cl != \"\" and " +
+        "((($q|length)>2 and (($cl|contains($q)) or ($q|contains($cl)))) or " +
+        "(($t|length)>2 and (($cl|contains($t)) or ($t|contains($cl)))))) | .address] | first // empty'); " +
+        "[ -n \"$addr\" ] || exit 3; " +
+        "exec hyprctl dispatch \"hl.dsp.focus({ window = \\\"address:$addr\\\" })\" >/dev/null"
+
+    Process {
+        id: focusProc
+        property var fallback: null
+        onExited: (code) => {
+            if (code !== 0 && focusProc.fallback) focusProc.fallback.activate()
+            focusProc.fallback = null
+        }
+    }
+
+    function smartActivate(item) {
+        if (focusProc.running) return
+        focusProc.fallback = item
+        focusProc.command = ["sh", "-c", root.focusScript, "tray",
+                             (item.id || "").toLowerCase(),
+                             (item.title || "").toLowerCase()]
+        focusProc.running = true
+    }
+
     Repeater {
         model: SystemTray.items
 
@@ -67,10 +98,10 @@ Row {
             onContainsMouseChanged:
                 containsMouse ? root.showTip(entry, entry.label) : root.hideTip(entry)
 
-            // Linksklick: App aktivieren (Fenster zeigen/fokussieren),
+            // Linksklick: zum Fenster der App springen (oder App aktivieren),
             // Rechtsklick: Kontextmenü der App
             onClicked: mouse => {
-                if (mouse.button === Qt.LeftButton) entry.modelData.activate()
+                if (mouse.button === Qt.LeftButton) root.smartActivate(entry.modelData)
                 else entry.modelData.secondaryActivate()
             }
 

@@ -218,6 +218,10 @@ window-rule {
     default-window-height { fixed 400; }
 }
 
+// niri hat keinen Special-Workspace; "scratch" als benannter Workspace
+// ist das Naechstbeste (Mod+Ctrl+S hin, Mod+Ctrl+A dorthin wechseln).
+workspace "scratch"
+
 // --- autostart ---------------------------------------------
 spawn-at-startup "awww-daemon"
 spawn-at-startup "sh" "-c" "awww-daemon --namespace .backdrop & sleep 0.4; awww img --namespace .backdrop $HOME/.cache/niri-wallpapers/eclipse-blur.jpg"
@@ -376,6 +380,9 @@ binds {
     Mod+Shift+0 { move-column-to-workspace 10; }
 
     // --- workspace navigation ------------------------------
+    Mod+Ctrl+S { move-column-to-workspace "scratch"; }
+    Mod+Ctrl+A { focus-workspace "scratch"; }
+
     Ctrl+Mod+H { move-column-to-workspace-up; }
     Ctrl+Mod+L { move-column-to-workspace-down; }
 

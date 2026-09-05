@@ -24,6 +24,13 @@ hl.bind(mod .. " + CTRL + L", function()
     if id then hl.dispatch(hl.dsp.window.move({ workspace = id, follow = true })) end
 end, { description = "Window to next workspace" })
 
+-- Scratchpad: Hyprlands "Minimieren" — Fenster auf den unsichtbaren
+-- Special-Workspace packen und per Toggle ein-/ausblenden.
+hl.bind(mod .. " + CTRL + S", hl.dsp.window.move({ workspace = "special:scratch" }),
+    { description = "Window to scratchpad" })
+hl.bind(mod .. " + CTRL + A", hl.dsp.workspace.toggle_special("scratch"),
+    { description = "Toggle scratchpad" })
+
 hl.bind(mod .. " + mouse_down", function()
     local id = ws.cycle_existing_id(1)
     if id then hl.dispatch(hl.dsp.focus({ workspace = id })) end
