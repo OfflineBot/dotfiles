@@ -537,21 +537,34 @@ Scope {
                                 RowLayout {
                                     Layout.fillWidth: true
                                     spacing: 8
-                                    visible: mediaRow.streams.length > 0
+                                    visible: mediaRow.modelData.volumeSupported
+                                             || mediaRow.streams.length > 0
+
+                                    // Spotify & Co. koennen ihre Lautstaerke selbst (MPRIS) —
+                                    // die ueberlebt Titelwechsel und Neustarts. Nur wenn der
+                                    // Player das nicht kann, regeln wir den Pipewire-Stream.
+                                    readonly property bool viaPlayer: mediaRow.modelData.volumeSupported
+                                    readonly property real vol: viaPlayer
+                                        ? mediaRow.modelData.volume
+                                        : ((mediaRow.streams.length > 0 && mediaRow.streams[0].audio)
+                                           ? mediaRow.streams[0].audio.volume : 0)
 
                                     ThemeSlider {
+                                        id: cardSlider
                                         Layout.fillWidth: true
-                                        value: (mediaRow.streams.length > 0 && mediaRow.streams[0].audio)
-                                               ? mediaRow.streams[0].audio.volume : 0
+                                        value: parent.vol
                                         fillColor: root.accentColor
                                         onMoved: (v) => {
-                                            for (const n of mediaRow.streams)
-                                                if (n.audio) n.audio.volume = v
+                                            if (parent.viaPlayer) {
+                                                mediaRow.modelData.volume = v
+                                            } else {
+                                                for (const n of mediaRow.streams)
+                                                    if (n.audio) n.audio.volume = v
+                                            }
                                         }
                                     }
                                     Text {
-                                        text: ((mediaRow.streams.length > 0 && mediaRow.streams[0].audio)
-                                               ? Math.round(mediaRow.streams[0].audio.volume * 100) : 0) + "%"
+                                        text: Math.round(parent.vol * 100) + "%"
                                         color: root.textColor
                                         opacity: 0.6
                                         font.family: "FiraCode Nerd Font Mono"
