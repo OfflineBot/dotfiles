@@ -1,0 +1,5 @@
+/* Streamer-Modus-Banner ausblenden — der Modus selbst bleibt in den
+   Einstellungen nutzbar, nur der gelbe Balken oben verschwindet. */
+div[class*="colorStreamerMode"] {
+    display: none !important;
+}
