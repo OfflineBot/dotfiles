@@ -89,8 +89,21 @@ Scope {
     readonly property var defaultSink: Pipewire.defaultAudioSink
     readonly property var audioSinks:
         [...Pipewire.nodes.values].filter(n => n.isSink && !n.isStream && n.audio)
+    readonly property var audioStreams:
+        [...Pipewire.nodes.values].filter(n => n.isStream && n.audio)
+
     PwObjectTracker {
-        objects: [...root.audioSinks]
+        objects: [...root.audioSinks, ...root.audioStreams]
+    }
+
+    // Pipewire-Streams zu einem MPRIS-Player finden (fuer Volume pro Card)
+    function streamsFor(p) {
+        const id = ((p.identity || "") + " " + (p.desktopEntry || "")).toLowerCase()
+        return audioStreams.filter(n => {
+            const app = (n.nickname || n.description || n.name || "").toLowerCase()
+            return app !== "" && (id.indexOf(app) !== -1
+                || app.indexOf((p.identity || "?").toLowerCase()) !== -1)
+        })
     }
 
     function nodeLabel(n) {
@@ -463,6 +476,8 @@ Scope {
                             width: parent.width
                             spacing: 10
 
+                            readonly property var streams: root.streamsFor(mediaRow.modelData)
+
                             Text {
                                 Layout.preferredWidth: 22
                                 horizontalAlignment: Text.AlignHCenter
@@ -519,6 +534,30 @@ Scope {
                                     font.family: "FiraCode Nerd Font Mono"
                                     font.pixelSize: 11
                                 }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 8
+                                    visible: mediaRow.streams.length > 0
+
+                                    ThemeSlider {
+                                        Layout.fillWidth: true
+                                        value: (mediaRow.streams.length > 0 && mediaRow.streams[0].audio)
+                                               ? mediaRow.streams[0].audio.volume : 0
+                                        fillColor: root.accentColor
+                                        onMoved: (v) => {
+                                            for (const n of mediaRow.streams)
+                                                if (n.audio) n.audio.volume = v
+                                        }
+                                    }
+                                    Text {
+                                        text: ((mediaRow.streams.length > 0 && mediaRow.streams[0].audio)
+                                               ? Math.round(mediaRow.streams[0].audio.volume * 100) : 0) + "%"
+                                        color: root.textColor
+                                        opacity: 0.6
+                                        font.family: "FiraCode Nerd Font Mono"
+                                        font.pixelSize: 10
+                                    }
+                                }
                             }
 
                             Row {
@@ -547,9 +586,12 @@ Scope {
                                     font.family: "MesloLGS Nerd Font Mono"
                                     font.pixelSize: 22
                                     color: root.accentColor
+                                    enabled: mediaRow.modelData.canTogglePlaying
+                                    opacity: enabled ? 1.0 : 0.25
                                     MouseArea {
                                         anchors.fill: parent
                                         anchors.margins: -6
+                                        enabled: parent.enabled
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: mediaRow.modelData.togglePlaying()
                                     }
