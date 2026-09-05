@@ -76,13 +76,17 @@ Scope {
 
         property var results: []
         property int selectedIndex: 0
+        property string query: ""
 
         readonly property int visibleRows: Math.min(results.length, root.maxRows)
         readonly property int listH: visibleRows * root.rowH
+        // Index hinter der Liste = die DuckDuckGo-Zeile unten
+        readonly property int totalCount: results.length + (query !== "" ? 1 : 0)
 
         implicitWidth: root.boxWidth
         implicitHeight: 20 + search.implicitHeight
-                        + (results.length > 0 ? 8 + listH : 0) + 20
+                        + (results.length > 0 ? 8 + listH : 0)
+                        + (query !== "" ? 8 + root.rowH : 0) + 20
         Behavior on implicitHeight {
             NumberAnimation { duration: 110; easing.type: Easing.OutCubic }
         }
@@ -124,22 +128,13 @@ Scope {
             return -1
         }
 
-        readonly property var bookmarks: [
-            { name: "YouTube",   url: "https://youtube.com",      keys: ["youtube", "yt"] },
-            { name: "Google",    url: "https://google.com",       keys: ["google"] },
-            { name: "GitHub",    url: "https://github.com",       keys: ["github", "gh"] },
-            { name: "Reddit",    url: "https://reddit.com",       keys: ["reddit"] },
-            { name: "Twitch",    url: "https://twitch.tv",        keys: ["twitch"] },
-            { name: "Wikipedia", url: "https://de.wikipedia.org", keys: ["wiki", "wikipedia"] },
-            { name: "Claude",    url: "https://claude.ai",        keys: ["claude"] }
-        ]
-
         function fmtNum(v) {
             return String(Math.round(v * 1e10) / 1e10)
         }
 
         function updateResults() {
             const q = search.text.toLowerCase().trim()
+            panel.query = q
 
             // leer -> nichts anzeigen
             if (q === "") { panel.results = []; panel.selectedIndex = 0; return }
@@ -158,19 +153,10 @@ Scope {
                 } catch (err) {}
             }
 
-            // Web-Shortcuts + direkte URLs (öffnen im Default-Browser)
-            for (const b of panel.bookmarks) {
-                if (b.keys.some(k => (q.length >= 2 && k.startsWith(q)) || q.startsWith(k))) {
-                    items.push({ kind: "web", name: b.name + " öffnen", url: b.url, s: 6500 })
-                }
-            }
+            // direkte URLs ("heise.de" -> öffnen)
             if (q.includes(".") && !q.includes(" ") && q.length > 3 && !/^[0-9.,]+$/.test(q))
                 items.push({ kind: "web", name: q + " öffnen",
                              url: (q.startsWith("http") ? q : "https://" + q), s: 6400 })
-
-            // generische Aktion, immer ganz unten (mit Tab erreichbar)
-            items.push({ kind: "web", name: "Online suchen: " + q,
-                         url: "https://www.google.com/search?q=" + encodeURIComponent(q), s: 100 })
 
             // Apps
             const all = DesktopEntries.applications.values
@@ -192,23 +178,35 @@ Scope {
             panel.selectedIndex = 0
         }
 
+        function openUrl(u) {
+            Quickshell.execDetached(["sh", "-c",
+                "exec \"$HOME/.config/hypr/scripts/open-url\" \"$1\"", "x", u])
+        }
+
         function move(delta) {
-            if (panel.results.length === 0) return
-            panel.selectedIndex = Math.max(0, Math.min(panel.selectedIndex + delta, panel.results.length - 1))
-            list.positionViewAtIndex(panel.selectedIndex, ListView.Contain)
+            if (panel.totalCount === 0) return
+            panel.selectedIndex = Math.max(0, Math.min(panel.selectedIndex + delta, panel.totalCount - 1))
+            if (panel.selectedIndex < panel.results.length)
+                list.positionViewAtIndex(panel.selectedIndex, ListView.Contain)
         }
 
         function cycle(delta) {
-            if (panel.results.length === 0) return
-            panel.selectedIndex = (panel.selectedIndex + delta + panel.results.length) % panel.results.length
-            list.positionViewAtIndex(panel.selectedIndex, ListView.Contain)
+            if (panel.totalCount === 0) return
+            panel.selectedIndex = (panel.selectedIndex + delta + panel.totalCount) % panel.totalCount
+            if (panel.selectedIndex < panel.results.length)
+                list.positionViewAtIndex(panel.selectedIndex, ListView.Contain)
         }
 
         function launchSelected() {
-            if (panel.results.length === 0) return
+            if (panel.selectedIndex >= panel.results.length) {
+                if (panel.query !== "")
+                    panel.openUrl("https://duckduckgo.com/?q=" + encodeURIComponent(panel.query))
+                root.hide()
+                return
+            }
             const r = panel.results[panel.selectedIndex]
             if (r.kind === "app") r.entry.execute()
-            else if (r.kind === "web") Quickshell.execDetached(["xdg-open", r.url])
+            else if (r.kind === "web") panel.openUrl(r.url)
             else if (r.kind === "calc")
                 Quickshell.execDetached(["sh", "-c", "printf %s " + JSON.stringify(r.copy) + " | wl-copy"])
             root.hide()
@@ -340,6 +338,52 @@ Scope {
                                 panel.selectedIndex = item.index
                                 panel.launchSelected()
                             }
+                        }
+                    }
+                }
+
+                // ---- Suche als eigene Zeile unter der Liste ----
+                Rectangle {
+                    id: searchAction
+                    width: parent.width
+                    height: root.rowH
+                    visible: panel.query !== ""
+                    radius: 6
+                    color: panel.selectedIndex >= panel.results.length
+                           ? root.selectionColor : "transparent"
+
+                    Row {
+                        anchors.fill: parent
+                        anchors.leftMargin: 8
+                        spacing: 8
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "󰍉"
+                            font.family: "MesloLGS Nerd Font Mono"
+                            font.pixelSize: 17
+                            color: panel.selectedIndex >= panel.results.length
+                                   ? root.backgroundColor : root.selectionColor
+                        }
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Mit DuckDuckGo suchen: " + panel.query
+                            font.pixelSize: 14
+                            elide: Text.ElideRight
+                            width: searchAction.width - 50
+                            color: panel.selectedIndex >= panel.results.length
+                                   ? root.backgroundColor : root.textColor
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onPositionChanged: panel.selectedIndex = panel.results.length
+                        onClicked: {
+                            panel.selectedIndex = panel.results.length
+                            panel.launchSelected()
                         }
                     }
                 }

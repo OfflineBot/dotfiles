@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# URL smart öffnen: ist gerade ein Browser-Fenster fokussiert, wird es dort
+# ein neuer Tab (xdg-open landet im aktiven Fenster); sonst ein neues
+# Browser-Fenster auf dem aktuellen Workspace.
+
+url="$1"
+[ -n "$url" ] || exit 1
+
+cls=$(hyprctl -j activewindow 2>/dev/null | jq -r '.class // ""' | tr '[:upper:]' '[:lower:]')
+case "$cls" in
+    *firefox*|*zen*|*librewolf*) exec xdg-open "$url" ;;
+    *) exec firefox --new-window "$url" ;;
+esac
