@@ -26,6 +26,10 @@ Scope {
 
     signal dismissed()
 
+    // Singleton anstossen, damit gespeicherte App-Lautstaerken sofort
+    // (und nicht erst nach dem ersten Slider-Griff) angewendet werden
+    Component.onCompleted: VolumeMemory.applyAll()
+
     // ---- brightness (brightnessctl, backlight class) ----
     property bool brightnessAvailable: false
     property real brightness: 0
@@ -560,6 +564,9 @@ Scope {
                                             } else {
                                                 for (const n of mediaRow.streams)
                                                     if (n.audio) n.audio.volume = v
+                                                if (mediaRow.streams.length > 0)
+                                                    VolumeMemory.remember(
+                                                        VolumeMemory.appOf(mediaRow.streams[0]), v)
                                             }
                                         }
                                     }
