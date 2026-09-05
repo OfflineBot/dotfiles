@@ -601,19 +601,22 @@ Scope {
                                 }
                                 Text {
                                     anchors.verticalCenter: parent.verticalCenter
-                                    text: mediaRow.modelData.playbackState === MprisPlaybackState.Playing
-                                          ? "\u{f03e4}" : "\u{f040a}"
+                                    readonly property bool playing:
+                                        mediaRow.modelData.playbackState === MprisPlaybackState.Playing
+                                    text: playing ? "\u{f03e4}" : "\u{f040a}"
                                     font.family: "MesloLGS Nerd Font Mono"
                                     font.pixelSize: 22
                                     color: root.accentColor
-                                    enabled: mediaRow.modelData.canTogglePlaying
+                                    enabled: playing || mediaRow.modelData.canPlay === true
                                     opacity: enabled ? 1.0 : 0.25
                                     MouseArea {
                                         anchors.fill: parent
                                         anchors.margins: -6
                                         enabled: parent.enabled
                                         cursorShape: Qt.PointingHandCursor
-                                        onClicked: mediaRow.modelData.togglePlaying()
+                                        onClicked: parent.playing
+                                                   ? mediaRow.modelData.pause()
+                                                   : mediaRow.modelData.play()
                                     }
                                 }
                                 Text {
