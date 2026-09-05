@@ -406,6 +406,15 @@ binds {
     Mod+Period { expel-window-from-column; }
 
     // --- move floating window ------------------------------
+    Mod+Ctrl+Up    { spawn "niri" "msg" "action" "move-floating-window" "-x" "0" "-y" "-10"; }
+    Mod+Ctrl+Down  { spawn "niri" "msg" "action" "move-floating-window" "-x" "0" "-y" "10"; }
+    Mod+Ctrl+Left  { spawn "niri" "msg" "action" "move-floating-window" "-x" "-10" "-y" "0"; }
+    Mod+Ctrl+Right { spawn "niri" "msg" "action" "move-floating-window" "-x" "10" "-y" "0"; }
+    Mod+Alt+Left  { set-column-width "-10"; }
+    Mod+Alt+Right { set-column-width "+10"; }
+    Mod+Alt+Up    { set-window-height "-10"; }
+    Mod+Alt+Down  { set-window-height "+10"; }
+    Mod+Ctrl+M { center-window; }
     Ctrl+Shift+Up    { spawn "niri" "msg" "action" "move-floating-window" "-x" "0" "-y" "-50"; }
     Ctrl+Shift+Down  { spawn "niri" "msg" "action" "move-floating-window" "-x" "0" "-y" "50"; }
     Ctrl+Shift+Left  { spawn "niri" "msg" "action" "move-floating-window" "-x" "-50" "-y" "0"; }

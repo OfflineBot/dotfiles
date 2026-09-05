@@ -132,3 +132,17 @@ hl.bind("CTRL + ALT + left",  hl.dsp.window.resize({ x = -50, y = 0, relative = 
 hl.bind("CTRL + ALT + right", hl.dsp.window.resize({ x = 50,  y = 0, relative = true }))
 hl.bind("CTRL + ALT + up",    hl.dsp.window.resize({ x = 0, y = -50, relative = true }))
 hl.bind("CTRL + ALT + down",  hl.dsp.window.resize({ x = 0, y = 50,  relative = true }))
+
+-- Feinschritte (10px, halten wiederholt) und zurück in die Mitte
+hl.bind(mod .. " + CTRL + up",    hl.dsp.window.move({ x = 0,   y = -10, relative = true }), { repeating = true })
+hl.bind(mod .. " + CTRL + down",  hl.dsp.window.move({ x = 0,   y = 10,  relative = true }), { repeating = true })
+hl.bind(mod .. " + CTRL + left",  hl.dsp.window.move({ x = -10, y = 0,   relative = true }), { repeating = true })
+hl.bind(mod .. " + CTRL + right", hl.dsp.window.move({ x = 10,  y = 0,   relative = true }), { repeating = true })
+
+hl.bind(mod .. " + ALT + left",  hl.dsp.window.resize({ x = -10, y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + ALT + right", hl.dsp.window.resize({ x = 10,  y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + ALT + up",    hl.dsp.window.resize({ x = 0, y = -10, relative = true }), { repeating = true })
+hl.bind(mod .. " + ALT + down",  hl.dsp.window.resize({ x = 0, y = 10,  relative = true }), { repeating = true })
+
+hl.bind(mod .. " + CTRL + M", hl.dsp.window.center(),
+    { description = "Center floating window" })
