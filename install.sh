@@ -49,13 +49,13 @@ for pkg in "${packages[@]}"; do
 done
 
 if ask "install ${#repo_pkgs[@]} packages with pacman?"; then
-    sudo pacman -S --needed "${repo_pkgs[@]}"
+    sudo pacman -S --needed "${repo_pkgs[@]}" || true
 fi
 
 if ((${#aur_pkgs[@]})); then
     if command -v paru >/dev/null; then
         if ask "install from aur with paru: ${aur_pkgs[*]}?"; then
-            paru -S --needed "${aur_pkgs[@]}"
+            paru -S --needed "${aur_pkgs[@]}" || true
         fi
     else
         echo "no paru, skipping aur packages: ${aur_pkgs[*]}"
@@ -63,8 +63,20 @@ if ((${#aur_pkgs[@]})); then
 fi
 
 if ask "install easyeffects via flatpak?"; then
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    flatpak install -y flathub com.github.wwmm.easyeffects
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
+    flatpak install -y flathub com.github.wwmm.easyeffects || true
 fi
 
-echo "done"
+missing=()
+for pkg in "${packages[@]}"; do
+    pacman -Qq "$pkg" >/dev/null 2>&1 || missing+=("$pkg")
+done
+flatpak info com.github.wwmm.easyeffects >/dev/null 2>&1 || missing+=("easyeffects (flatpak)")
+
+echo
+if ((${#missing[@]})); then
+    echo "not installed:"
+    printf '  %s\n' "${missing[@]}"
+else
+    echo "everything installed"
+fi
