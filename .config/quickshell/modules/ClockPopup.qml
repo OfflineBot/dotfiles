@@ -117,16 +117,21 @@ Scope {
     readonly property bool hasSpotifyStream:
         audioStreams.some(n => (nodeLabel(n) || "").toLowerCase().indexOf("spotify") !== -1)
 
-    // ---- media (MPRIS) ----------------------------------
-    readonly property var player: {
-        const ps = Mpris.players ? Mpris.players.values : []
-        if (!ps || ps.length === 0) return null
-        for (let i = 0; i < ps.length; i++)
-            if (ps[i].playbackState === MprisPlaybackState.Playing) return ps[i]
-        return ps[0]
+    // ---- media (MPRIS, alle Quellen) --------------------
+    readonly property var mprisList: Mpris.players ? [...Mpris.players.values] : []
+
+    function sourceIcon(p) {
+        const id = ((p.identity || "") + " " + (p.desktopEntry || "")).toLowerCase()
+        let url = ""
+        try { url = String((p.metadata && p.metadata["xesam:url"]) || "").toLowerCase() } catch (e) {}
+        if (id.indexOf("spotify") !== -1) return "\u{f04c7}"
+        if (url.indexOf("youtu") !== -1) return "\u{f05c3}"
+        if (id.indexOf("firefox") !== -1 || id.indexOf("zen") !== -1) return "\u{f0239}"
+        if (id.indexOf("chrom") !== -1 || id.indexOf("helium") !== -1) return "\u{f02af}"
+        if (id.indexOf("discord") !== -1 || id.indexOf("vesktop") !== -1) return "\u{f066f}"
+        if (id.indexOf("mpv") !== -1) return "\u{f036b}"
+        return "\u{f0388}"
     }
-    readonly property bool hasPlayer: player !== null
-    readonly property bool isPlaying: hasPlayer && player.playbackState === MprisPlaybackState.Playing
 
     function isoWeek(d) {
         const date = new Date(d.getFullYear(), d.getMonth(), d.getDate())
@@ -294,138 +299,127 @@ Scope {
                     color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
                 }
 
-                // ---- now playing ------------------------
+                // ---- media: alle Quellen ----------------
                 Column {
                     width: parent.width
-                    spacing: 12
+                    spacing: 10
+                    visible: root.mprisList.length > 0
 
-                    RowLayout {
-                        width: parent.width
-                        spacing: 12
+                    Repeater {
+                        model: root.mprisList
 
-                        Rectangle {
-                            Layout.preferredWidth: 64
-                            Layout.preferredHeight: 64
-                            radius: 8
-                            clip: true
-                            color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.08)
-                            border.width: 1
-                            border.color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
+                        delegate: RowLayout {
+                            id: mediaRow
+                            required property var modelData
+                            width: parent.width
+                            spacing: 10
 
-                            Image {
-                                anchors.fill: parent
-                                source: root.hasPlayer && root.player.trackArtUrl ? root.player.trackArtUrl : ""
-                                fillMode: Image.PreserveAspectCrop
-                                asynchronous: true
-                                visible: status === Image.Ready
-                            }
                             Text {
-                                anchors.centerIn: parent
-                                visible: !(root.hasPlayer && root.player.trackArtUrl)
-                                text: "󰎈"
+                                Layout.preferredWidth: 22
+                                horizontalAlignment: Text.AlignHCenter
+                                text: root.sourceIcon(mediaRow.modelData)
                                 font.family: "MesloLGS Nerd Font Mono"
-                                font.pixelSize: 30
-                                color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.4)
-                            }
-                        }
-
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 3
-
-                            Text {
-                                Layout.fillWidth: true
-                                text: root.hasPlayer && root.player.trackTitle
-                                      ? root.player.trackTitle : "Nothing playing"
-                                elide: Text.ElideRight
+                                font.pixelSize: 17
                                 color: root.textColor
-                                opacity: root.hasPlayer ? 1.0 : 0.5
-                                font.family: "FiraCode Nerd Font Mono"
-                                font.pixelSize: 15
-                                font.weight: Font.Medium
+                                opacity: 0.9
                             }
-                            Text {
-                                Layout.fillWidth: true
-                                visible: root.hasPlayer && !!root.player.trackArtist
-                                text: root.hasPlayer ? root.player.trackArtist : ""
-                                elide: Text.ElideRight
-                                color: root.textColor
-                                opacity: 0.6
-                                font.family: "FiraCode Nerd Font Mono"
-                                font.pixelSize: 13
-                            }
-                        }
-                    }
 
-                    Item {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        width: ctlRow.implicitWidth
-                        height: 40
+                            Rectangle {
+                                Layout.preferredWidth: 40
+                                Layout.preferredHeight: 40
+                                radius: 6
+                                clip: true
+                                color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.08)
 
-                        Row {
-                            id: ctlRow
-                            anchors.centerIn: parent
-                            spacing: 30
-
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "󰒮"
-                                font.family: "MesloLGS Nerd Font Mono"
-                                font.pixelSize: 24
-                                color: root.textColor
-                                enabled: root.hasPlayer && root.player.canGoPrevious
-                                opacity: enabled ? (prevHover.containsMouse ? 1.0 : 0.8) : 0.25
-                                Behavior on opacity { NumberAnimation { duration: 120 } }
-                                MouseArea {
-                                    id: prevHover
+                                Image {
                                     anchors.fill: parent
-                                    anchors.margins: -8
-                                    hoverEnabled: true
-                                    enabled: parent.enabled
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.player.previous()
+                                    source: mediaRow.modelData.trackArtUrl || ""
+                                    fillMode: Image.PreserveAspectCrop
+                                    asynchronous: true
+                                    visible: status === Image.Ready
+                                }
+                                Text {
+                                    anchors.centerIn: parent
+                                    visible: !mediaRow.modelData.trackArtUrl
+                                    text: "\u{f0388}"
+                                    font.family: "MesloLGS Nerd Font Mono"
+                                    font.pixelSize: 18
+                                    color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.4)
                                 }
                             }
 
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: root.isPlaying ? "󰏤" : "󰐊"
-                                font.family: "MesloLGS Nerd Font Mono"
-                                font.pixelSize: 34
-                                color: root.hasPlayer ? root.accentColor : root.textColor
-                                enabled: root.hasPlayer && root.player.canTogglePlaying
-                                opacity: enabled ? (playHover.containsMouse ? 1.0 : 0.92) : 0.25
-                                Behavior on opacity { NumberAnimation { duration: 120 } }
-                                scale: playHover.containsMouse && enabled ? 1.12 : 1.0
-                                Behavior on scale { NumberAnimation { duration: 130; easing.type: Easing.OutBack } }
-                                MouseArea {
-                                    id: playHover
-                                    anchors.fill: parent
-                                    anchors.margins: -8
-                                    hoverEnabled: true
-                                    enabled: parent.enabled
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.player.togglePlaying()
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: mediaRow.modelData.trackTitle || mediaRow.modelData.identity || "?"
+                                    elide: Text.ElideRight
+                                    color: root.textColor
+                                    font.family: "FiraCode Nerd Font Mono"
+                                    font.pixelSize: 13
+                                    font.weight: Font.Medium
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    visible: !!mediaRow.modelData.trackArtist
+                                    text: mediaRow.modelData.trackArtist || ""
+                                    elide: Text.ElideRight
+                                    color: root.textColor
+                                    opacity: 0.55
+                                    font.family: "FiraCode Nerd Font Mono"
+                                    font.pixelSize: 11
                                 }
                             }
 
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "󰒭"
-                                font.family: "MesloLGS Nerd Font Mono"
-                                font.pixelSize: 24
-                                color: root.textColor
-                                enabled: root.hasPlayer && root.player.canGoNext
-                                opacity: enabled ? (nextHover.containsMouse ? 1.0 : 0.8) : 0.25
-                                Behavior on opacity { NumberAnimation { duration: 120 } }
-                                MouseArea {
-                                    id: nextHover
-                                    anchors.fill: parent
-                                    anchors.margins: -8
-                                    hoverEnabled: true
-                                    enabled: parent.enabled
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.player.next()
+                            Row {
+                                spacing: 14
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: "\u{f04ae}"
+                                    font.family: "MesloLGS Nerd Font Mono"
+                                    font.pixelSize: 18
+                                    color: root.textColor
+                                    enabled: mediaRow.modelData.canGoPrevious
+                                    opacity: enabled ? 0.85 : 0.25
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        anchors.margins: -6
+                                        enabled: parent.enabled
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: mediaRow.modelData.previous()
+                                    }
+                                }
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: mediaRow.modelData.playbackState === MprisPlaybackState.Playing
+                                          ? "\u{f03e4}" : "\u{f040a}"
+                                    font.family: "MesloLGS Nerd Font Mono"
+                                    font.pixelSize: 22
+                                    color: root.accentColor
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        anchors.margins: -6
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: mediaRow.modelData.togglePlaying()
+                                    }
+                                }
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: "\u{f04ad}"
+                                    font.family: "MesloLGS Nerd Font Mono"
+                                    font.pixelSize: 18
+                                    color: root.textColor
+                                    enabled: mediaRow.modelData.canGoNext
+                                    opacity: enabled ? 0.85 : 0.25
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        anchors.margins: -6
+                                        enabled: parent.enabled
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: mediaRow.modelData.next()
+                                    }
                                 }
                             }
                         }
