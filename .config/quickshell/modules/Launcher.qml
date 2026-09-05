@@ -19,7 +19,7 @@ Scope {
 
     property int boxWidth: 460
     property int rowH: 36
-    property int maxRows: 8
+    property int maxRows: 12
 
     property bool shown: false
 
@@ -71,6 +71,9 @@ Scope {
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
         WlrLayershell.namespace: "quickshell-launcher"
 
+        anchors.top: true
+        margins.top: 220
+
         property var results: []
         property int selectedIndex: 0
 
@@ -113,28 +116,79 @@ Scope {
             if (idx >= 0) return 7000 - idx * 5 - name.length
             const f = panel.fuzzyScore(q, name)
             if (f >= 0) return 4000 + f
+            // Kommentar/Keywords nur als schwacher Notnagel — sonst matcht
+            // "steam" jedes Spiel mit "Play this game on Steam" im Comment
             const extra = ((e.genericName || "") + " " + (e.comment || "") + " "
                           + ((e.keywords || []).join(" "))).toLowerCase()
-            if (extra.includes(q)) return 2000
+            if (extra.includes(q)) return 500
             return -1
+        }
+
+        readonly property var bookmarks: [
+            { name: "YouTube",   url: "https://youtube.com",      keys: ["youtube", "yt"] },
+            { name: "Google",    url: "https://google.com",       keys: ["google"] },
+            { name: "GitHub",    url: "https://github.com",       keys: ["github", "gh"] },
+            { name: "Reddit",    url: "https://reddit.com",       keys: ["reddit"] },
+            { name: "Twitch",    url: "https://twitch.tv",        keys: ["twitch"] },
+            { name: "Wikipedia", url: "https://de.wikipedia.org", keys: ["wiki", "wikipedia"] },
+            { name: "Claude",    url: "https://claude.ai",        keys: ["claude"] }
+        ]
+
+        function fmtNum(v) {
+            return String(Math.round(v * 1e10) / 1e10)
         }
 
         function updateResults() {
             const q = search.text.toLowerCase().trim()
+
+            // leer -> nichts anzeigen
+            if (q === "") { panel.results = []; panel.selectedIndex = 0; return }
+
+            let items = []
+
+            // Rechner: "6 * 6" -> 36 (Enter kopiert das Ergebnis)
+            if (/^[0-9+\-*/(). ,%^]+$/.test(q) && /[0-9]/.test(q)
+                && /[+*/%^]/.test(q) || /^-?[0-9.,() ]+-[0-9.,() ]+/.test(q)) {
+                try {
+                    const expr = q.replace(/,/g, ".").replace(/\^/g, "**")
+                    const v = Function('"use strict"; return (' + expr + ')')()
+                    if (typeof v === "number" && isFinite(v))
+                        items.push({ kind: "calc", name: q + " = " + panel.fmtNum(v),
+                                     copy: panel.fmtNum(v), s: 11000 })
+                } catch (err) {}
+            }
+
+            // Web-Shortcuts + direkte URLs (öffnen im Default-Browser)
+            for (const b of panel.bookmarks) {
+                if (b.keys.some(k => (q.length >= 2 && k.startsWith(q)) || q.startsWith(k))) {
+                    items.push({ kind: "web", name: b.name + " öffnen", url: b.url, s: 6500 })
+                }
+            }
+            if (q.includes(".") && !q.includes(" ") && q.length > 3 && !/^[0-9.,]+$/.test(q))
+                items.push({ kind: "web", name: q + " öffnen",
+                             url: (q.startsWith("http") ? q : "https://" + q), s: 6400 })
+
+            // generische Aktion, immer ganz unten (mit Tab erreichbar)
+            items.push({ kind: "web", name: "Online suchen: " + q,
+                         url: "https://www.google.com/search?q=" + encodeURIComponent(q), s: 100 })
+
+            // Apps
             const all = DesktopEntries.applications.values
-            const scored = []
             for (let i = 0; i < all.length; i++) {
                 const e = all[i]
                 if (e.noDisplay) continue
-                if (q === "") { scored.push({ e: e, s: 0 }); continue }
                 const s = panel.score(q, e)
-                if (s > -1) scored.push({ e: e, s: s })
+                if (s > -1) items.push({ kind: "app", name: e.name, entry: e, s: s })
             }
-            if (q === "")
-                scored.sort((a, b) => a.e.name.localeCompare(b.e.name))
-            else
-                scored.sort((a, b) => b.s - a.s || a.e.name.localeCompare(b.e.name))
-            panel.results = scored.map(x => x.e)
+
+            // gibt es starke Treffer, fliegen die schwachen App-Treffer
+            // (Comment-Matches, wackelige Fuzzy-Treffer) komplett raus;
+            // Aktionen wie Rechner/Web bleiben immer
+            const top = items.reduce((m, x) => Math.max(m, x.s), 0)
+            if (top >= 7000) items = items.filter(x => x.kind !== "app" || x.s >= 3000)
+
+            items.sort((a, b) => b.s - a.s || a.name.localeCompare(b.name))
+            panel.results = items.slice(0, 40)
             panel.selectedIndex = 0
         }
 
@@ -144,9 +198,19 @@ Scope {
             list.positionViewAtIndex(panel.selectedIndex, ListView.Contain)
         }
 
+        function cycle(delta) {
+            if (panel.results.length === 0) return
+            panel.selectedIndex = (panel.selectedIndex + delta + panel.results.length) % panel.results.length
+            list.positionViewAtIndex(panel.selectedIndex, ListView.Contain)
+        }
+
         function launchSelected() {
             if (panel.results.length === 0) return
-            panel.results[panel.selectedIndex].execute()
+            const r = panel.results[panel.selectedIndex]
+            if (r.kind === "app") r.entry.execute()
+            else if (r.kind === "web") Quickshell.execDetached(["xdg-open", r.url])
+            else if (r.kind === "calc")
+                Quickshell.execDetached(["sh", "-c", "printf %s " + JSON.stringify(r.copy) + " | wl-copy"])
             root.hide()
         }
 
@@ -211,6 +275,8 @@ Scope {
 
                     Keys.onDownPressed:   panel.move(1)
                     Keys.onUpPressed:     panel.move(-1)
+                    Keys.onTabPressed:    panel.cycle(1)
+                    Keys.onBacktabPressed: panel.cycle(-1)
                     Keys.onReturnPressed: panel.launchSelected()
                     Keys.onEnterPressed:  panel.launchSelected()
                     Keys.onEscapePressed: root.hide()
@@ -241,8 +307,20 @@ Scope {
 
                             IconImage {
                                 anchors.verticalCenter: parent.verticalCenter
+                                visible: item.modelData.kind === "app"
                                 implicitSize: 20
-                                source: Quickshell.iconPath(item.modelData.icon, true)
+                                source: item.modelData.kind === "app"
+                                        ? Quickshell.iconPath(item.modelData.entry.icon, true) : ""
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                visible: item.modelData.kind !== "app"
+                                text: item.modelData.kind === "calc" ? "󰃬" : "󰖟"
+                                font.family: "MesloLGS Nerd Font Mono"
+                                font.pixelSize: 17
+                                color: item.index === panel.selectedIndex
+                                       ? root.backgroundColor : root.selectionColor
                             }
 
                             Text {
