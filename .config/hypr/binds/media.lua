@@ -12,8 +12,12 @@ hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ to
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
     { locked = true, description = "Mute microphone" })
 
--- Brightness-Binds entfernt: kein Backlight auf diesem Rechner
--- (Desktop, 3x DisplayPort). Monitor-Helligkeit ginge nur via ddcutil.
+-- Mod+F5/F6 waren mal Brightness (kein Backlight auf diesem Desktop),
+-- jetzt Lautstärke für Tastaturen ohne Media-Keys.
+hl.bind(mod .. " + F5", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
+    { locked = true, repeating = true, description = "Volume down" })
+hl.bind(mod .. " + F6", hl.dsp.exec_cmd("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"),
+    { locked = true, repeating = true, description = "Volume up" })
 
 ---- player --------------------------------------------------------------
 

@@ -1,39 +1,41 @@
 #!/usr/bin/env bash
 # WireGuard-Toggle-Menü — läuft in einem floating kitty mit fzf.
-# Ohne Argument: öffnet das Fenster. --tui: der eigentliche Picker (im kitty).
-# Vorteil gegenüber rofi: die sudo-Passwortabfrage ist sichtbar.
+# Aktive Tunnel kommen ohne Root von `ip link`; sudo braucht nur das
+# Lesen von /etc/wireguard und das Schalten selbst (einmal Passwort,
+# danach greift der sudo-Cache).
 
 if [ "${1:-}" != "--tui" ]; then
     exec kitty --class menu-float --title "VPN" -e "$0" --tui
 fi
 
-get_configs() { ls /etc/wireguard/*.conf 2>/dev/null | xargs -I{} basename {} .conf; }
-get_active()  { sudo wg show interfaces 2>/dev/null | tr ' ' '\n'; }
+pause_exit() { printf '\n%s\n' "$1"; read -r -n1 -p "Taste drücken zum Schließen ..."; exit "${2:-1}"; }
 
-active=$(get_active)
+command -v wg-quick >/dev/null || pause_exit "wireguard-tools ist nicht installiert."
+
+active=$(ip -br link show type wireguard 2>/dev/null | cut -d' ' -f1)
+
+printf 'WireGuard — sudo-Passwort zum Lesen von /etc/wireguard:\n'
+configs=$(sudo ls /etc/wireguard 2>/dev/null | sed -n 's/\.conf$//p')
+[ -n "$configs" ] || pause_exit "Keine .conf-Dateien in /etc/wireguard gefunden."
+
 menu=""
 while IFS= read -r conf; do
-    [ -z "$conf" ] && continue
     if grep -qx "$conf" <<< "$active"; then
         menu+=" ${conf} (connected)"$'\n'
     else
         menu+="󰌾 ${conf}"$'\n'
     fi
-done <<< "$(get_configs)"
-
-if [ -z "$menu" ]; then
-    echo "Keine Configs in /etc/wireguard gefunden. Taste drücken zum Schließen."
-    read -r -n1
-    exit 1
-fi
+done <<< "$configs"
 
 chosen=$(printf '%s' "$menu" | fzf --prompt="WireGuard> " --reverse --no-info) || exit 0
 conf=$(sed 's/^[^ ]* //; s/ (connected)$//' <<< "$chosen")
 
 if grep -qx "$conf" <<< "$active"; then
     sudo wg-quick down "$conf" \
-        && notify-send "WireGuard" "Disconnected from ${conf}" -i network-vpn-symbolic
+        && notify-send "WireGuard" "Disconnected from ${conf}" -i network-vpn-symbolic \
+        || pause_exit "wg-quick down ${conf} ist fehlgeschlagen."
 else
     sudo wg-quick up "$conf" \
-        && notify-send "WireGuard" "Connected to ${conf}" -i network-vpn-acquiring-symbolic
+        && notify-send "WireGuard" "Connected to ${conf}" -i network-vpn-acquiring-symbolic \
+        || pause_exit "wg-quick up ${conf} ist fehlgeschlagen."
 fi
