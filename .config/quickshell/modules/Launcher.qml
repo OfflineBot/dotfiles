@@ -71,9 +71,6 @@ Scope {
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
         WlrLayershell.namespace: "quickshell-launcher"
 
-        anchors.top: true
-        margins.top: 220
-
         property var results: []
         property int selectedIndex: 0
         property string query: ""
