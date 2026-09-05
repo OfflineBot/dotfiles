@@ -9,7 +9,7 @@ packages=(
     mako nwg-look grim slurp wl-clipboard wl-clip-persist cliphist
     fzf fd ripgrep bat eza zoxide jq playerctl cowsay libnotify
     wireguard-tools ttf-firacode-nerd firefox nautilus pavucontrol
-    flatpak
+    flatpak spotify-launcher vesktop-bin spicetify-cli
     catppuccin-gtk-theme-mocha catppuccin-cursors-mocha
 )
 
