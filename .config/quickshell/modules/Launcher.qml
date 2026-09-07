@@ -387,8 +387,8 @@ Scope {
                         }
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: panel.queryIsUrl ? panel.query + " öffnen"
-                                                   : "Mit DuckDuckGo suchen: " + panel.query
+                            text: panel.queryIsUrl ? "Open " + panel.query
+                                                   : "Search DuckDuckGo: " + panel.query
                             font.pixelSize: 14
                             elide: Text.ElideRight
                             width: searchAction.width - 50
