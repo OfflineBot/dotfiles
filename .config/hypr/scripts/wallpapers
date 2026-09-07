@@ -3,7 +3,7 @@
 WALL_DIR="$HOME/Pictures/wallpapers"
 TRANSITION=(--transition-type grow --transition-pos center --transition-fps 60 --transition-duration 1)
 
-mapfile -t IMAGES < <(find "$WALL_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.webp' \))
+mapfile -t IMAGES < <(find -L "$WALL_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.webp' \))
 if [ "${#IMAGES[@]}" -eq 0 ]; then
     echo "No images found in $WALL_DIR" >&2
     exit 1
