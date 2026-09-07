@@ -3,13 +3,18 @@
 hyprland with a lua config, quickshell for the bar, launcher and overview,
 kitty + fish on the terminal side. running on cachyos.
 
+the keybinds are vim-first throughout: hjkl moves between windows and
+workspaces the same way it moves in neovim and tmux.
+
 ![desktop](screenshots/clean.png)
 ![terminal](screenshots/terminal.png)
 ![editor](screenshots/editor.png)
+![overview](screenshots/overview.png)
 ![media](screenshots/media.png)
 
 also in here: niri and mango configs from trying stuff out, tmux,
-mako, nvim, micro, btop, bat, fastfetch, zathura and a few wallpapers.
+mako, nvim, micro, btop, bat, fastfetch, zathura and the catppuccin-mocha
+wallpaper set.
 
 ## install
 
