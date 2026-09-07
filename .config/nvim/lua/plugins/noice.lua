@@ -7,9 +7,7 @@ return {
     },
 
     config = function()
-        local fg = vim.api.nvim_get_hl_by_name("Type", true).fg
         vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", { fg = "#dbbc7f", bg = "NONE" })
-        vim.api.nvim_set_hl(0, "Keyword", { fg = fg, bg = "NONE" })
         require('noice').setup({
             notify = {
                 enabled = false,
