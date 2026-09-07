@@ -41,6 +41,14 @@ return {
                     CmpItemAbbrMatch      = { fg = c.mauve, bold = true },
                     CmpItemAbbrMatchFuzzy = { fg = c.mauve, bold = true },
                     CmpItemMenu           = { fg = c.overlay0, italic = true },
+
+                    -- completion + docs: give the popups a solid surface and
+                    -- keep the border on the same background, so the rounded
+                    -- corners have no square frame bleeding around them
+                    Pmenu        = { bg = c.mantle },
+                    CmpBorder    = { fg = c.mauve, bg = c.mantle },
+                    CmpDoc       = { bg = c.mantle },
+                    CmpDocBorder = { fg = c.mauve, bg = c.mantle },
                 }
             end,
         },

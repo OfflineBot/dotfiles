@@ -31,8 +31,14 @@ return {
                     end,
                 },
                 window = {
-                    completion = cmp.config.window.bordered({ border = "rounded" }),
-                    documentation = cmp.config.window.bordered({ border = "rounded" }),
+                    completion = cmp.config.window.bordered({
+                        border = "rounded",
+                        winhighlight = "Normal:Pmenu,FloatBorder:CmpBorder,CursorLine:PmenuSel,Search:None",
+                    }),
+                    documentation = cmp.config.window.bordered({
+                        border = "rounded",
+                        winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder,Search:None",
+                    }),
                 },
                 formatting = {
                     fields = { "kind", "abbr", "menu" },

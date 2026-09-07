@@ -26,6 +26,18 @@ return {
                 update_in_insert = false,
             })
 
+            -- let treesitter own the highlighting. rust-analyzer's semantic
+            -- tokens otherwise layer on top and leave keywords like `pub` and
+            -- `impl` uncolored until the colorscheme is re-applied by hand.
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if client then
+                        client.server_capabilities.semanticTokensProvider = nil
+                    end
+                end,
+            })
+
             vim.keymap.set("n", "K", function()
                 vim.diagnostic.open_float(nil, { focusable = false })
             end)
