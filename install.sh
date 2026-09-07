@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 packages=(
     hyprland hyprlock niri quickshell awww xwayland-satellite
-    kitty fish zellij tmux neovim micro btop fastfetch zathura
+    kitty fish tmux neovim micro btop fastfetch zathura
     mako nwg-look grim slurp wl-clipboard wl-clip-persist cliphist
     fzf fd ripgrep bat eza zoxide jq playerctl cowsay libnotify
     wireguard-tools ttf-firacode-nerd firefox nautilus pavucontrol

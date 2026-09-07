@@ -7,7 +7,7 @@ kitty + fish on the terminal side. running on cachyos.
 ![terminal](screenshots/terminal.png)
 ![editor](screenshots/editor.png)
 
-also in here: niri and mango configs from trying stuff out, zellij, tmux,
+also in here: niri and mango configs from trying stuff out, tmux,
 mako, nvim, micro, btop, bat, fastfetch, zathura and a few wallpapers.
 
 ## install
@@ -20,7 +20,7 @@ listed at the end. you can also just copy over what you want.
 
 ```
 wm/desktop  hyprland hyprlock niri quickshell awww xwayland-satellite mako
-terminal    kitty fish zellij tmux neovim micro
+terminal    kitty fish tmux neovim micro
 tools       btop fastfetch zathura nwg-look fzf fd ripgrep bat eza zoxide
             jq playerctl grim slurp wl-clipboard wl-clip-persist cliphist
 apps        firefox nautilus pavucontrol spotify-launcher vesktop spicetify
