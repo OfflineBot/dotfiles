@@ -1,0 +1,4 @@
+/* Streamer-Modus-Banner ausblenden — der Modus selbst bleibt nutzbar. */
+div[class*="colorStreamerMode"] {
+    display: none !important;
+}

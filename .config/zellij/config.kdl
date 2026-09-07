@@ -184,3 +184,30 @@ themes {
 session_serialization true
 serialize_pane_viewport true
 scrollback_lines_to_serialize 10000
+
+// ── Keine Anfragen, die im Browser niemand beantwortet ───────────────────
+//
+// Gesetzt vom home_server. zellij fragt beim Start, was das Terminal kann.
+// Zwei dieser Fragen — das Kitty-Tastatur- und das Kitty-Grafikprotokoll —
+// beantwortet xterm.js im Browser gar nicht, weil es sie nicht kennt. zellij
+// wartet dann auf seine Frist, und eine Antwort, die *danach* eintrifft,
+// reicht es an die Shell weiter: dort stehen dann Zeichenreste, die beim
+// nächsten Tastendruck wieder verschwinden.
+//
+// Auf einem Terminal am Rechner selbst kosten die beiden Zeilen etwas — dort
+// könnte zellij Bilder anzeigen und feinere Tastenkombinationen erkennen.
+// Hier läuft es über den Browser, wo beides ohnehin nicht ankommt.
+support_kitty_keyboard_protocol false
+support_kitty_graphics_protocol false
+
+// ── Doch keine Wiederbelebung ────────────────────────────────────────────
+//
+// Zurückgenommen vom home_server, auf Ansage. Was zurückkam, war in der
+// Benutzung lästiger als nützlich: eine beendete Sitzung stand wieder da,
+// und ein „neues" Terminal öffnete das Verzeichnis von vorgestern.
+//
+// Die Terminals im Browser laufen wieder unter tmux. zellij ist nur noch der
+// Rückfall, falls tmux einmal fehlt — und soll dann nichts aufheben.
+// Diese Zeilen überschreiben die weiter oben.
+session_serialization false
+serialize_pane_viewport false
