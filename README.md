@@ -3,8 +3,9 @@
 hyprland with a lua config, quickshell for the bar, launcher and overview,
 kitty + fish on the terminal side. running on cachyos.
 
-![desktop](screenshots/desktop.png)
-![terminals](screenshots/terminals.png)
+![desktop](screenshots/clean.png)
+![terminal](screenshots/terminal.png)
+![editor](screenshots/editor.png)
 
 also in here: niri and mango configs from trying stuff out, zellij, tmux,
 mako, nvim, micro, btop, bat, fastfetch, zathura and a few wallpapers.

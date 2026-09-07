@@ -67,6 +67,16 @@ if ask "install easyeffects via flatpak?"; then
     flatpak install -y flathub com.github.wwmm.easyeffects || true
 fi
 
+if ask "build hyprglass plugin? (needs hyprland headers)"; then
+    src="$HOME/.local/src/hyprglass"
+    if [ ! -d "$src" ]; then
+        git clone https://github.com/hyprnux/hyprglass "$src" || true
+    fi
+    if [ -d "$src" ]; then
+        make -C "$src" || echo "hyprglass build failed"
+    fi
+fi
+
 missing=()
 for pkg in "${packages[@]}"; do
     pacman -Qq "$pkg" >/dev/null 2>&1 || missing+=("$pkg")
