@@ -6,6 +6,7 @@ kitty + fish on the terminal side. running on cachyos.
 ![desktop](screenshots/clean.png)
 ![terminal](screenshots/terminal.png)
 ![editor](screenshots/editor.png)
+![media](screenshots/media.png)
 
 also in here: niri and mango configs from trying stuff out, tmux,
 mako, nvim, micro, btop, bat, fastfetch, zathura and a few wallpapers.
