@@ -8,6 +8,12 @@ Row {
     property color textColor: "#cdd6f4"
     property color activeColor: "#cba6f7"
 
+    // scratchpad indicator: no extra chip, just recolor the active chip on the
+    // monitor the scratchpad is showing on
+    property bool scratchActive: false
+    property string focusedOutput: ""
+    property color scratchColor: "#fab387"
+
     spacing: 6
 
     Repeater {
@@ -23,10 +29,17 @@ Row {
             readonly property string label:
                 (modelData.name && modelData.name.length) ? modelData.name : String(modelData.idx)
 
+            // scratchpad is up over this workspace: paint the chip peach instead
+            // of the usual focus/active colors, no layout change
+            readonly property bool scratchHere:
+                root.scratchActive && modelData.active
+                && root.screenName === root.focusedOutput
+
             width: Math.max(22, txt.implicitWidth + 14)
             height: 22
             radius: 6
-            color: isFocused ? root.activeColor
+            color: scratchHere ? root.scratchColor
+                   : isFocused ? root.activeColor
                    : modelData.active ? Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
                    : "transparent"
 
@@ -38,8 +51,8 @@ Row {
                 text: chip.label
                 font.pixelSize: 13
                 font.family: "FiraCode Nerd Font Mono"
-                color: chip.isFocused ? "#1e1e2e" : root.textColor
-                opacity: chip.isFocused || chip.modelData.active ? 1.0 : 0.55
+                color: (chip.isFocused || chip.scratchHere) ? "#1e1e2e" : root.textColor
+                opacity: chip.isFocused || chip.scratchHere || chip.modelData.active ? 1.0 : 0.55
             }
 
             MouseArea {

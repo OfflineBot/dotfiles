@@ -84,6 +84,8 @@ Scope {
                     screenName: bar.modelData.name
                     textColor: root.textColor
                     activeColor: root.accentColor
+                    scratchActive: workspaceProvider.scratchVisible
+                    focusedOutput: workspaceProvider.focusedOutput
                 }
 
                 Clock {

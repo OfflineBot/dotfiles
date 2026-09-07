@@ -8,6 +8,12 @@ Scope {
 
     property var workspaces: []
 
+    // true while a special workspace (scratchpad) is shown/focused, plus the
+    // monitor it sits on. the bar tints that monitor's active chip instead of
+    // adding a scratch chip that would reflow the row.
+    property bool scratchVisible: false
+    property string focusedOutput: ""
+
     // ---- hyprland per-monitor blocks --------------------
     readonly property int hyprPerMonitor: Ws.perMonitor
 
@@ -136,21 +142,39 @@ Scope {
     }
     Component.onCompleted: if (root.backend === "hyprland") root._syncHyprland()
 
+    // a special workspace is an overlay that never changes the focused
+    // workspace, so its visibility is tracked from hyprland's activespecial
+    // event ("name,monitor"; an empty name means it was hidden)
+    function _applyScratch(data) {
+        const c = data.indexOf(",")
+        const name = c >= 0 ? data.slice(0, c) : data
+        root.scratchVisible = name.length > 0
+        root.focusedOutput = name.length > 0 ? (c >= 0 ? data.slice(c + 1) : "") : ""
+    }
+
+    Connections {
+        enabled: root.backend === "hyprland"
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "activespecial") root._applyScratch(event.data)
+        }
+    }
+
     function _syncHyprland() {
-        const focusedId = Hyprland.focusedWorkspace ? Hyprland.focusedWorkspace.id : -1
-        const ws = [...Hyprland.workspaces.values].map(w => {
-            const special = w.id < 0
-            return {
-                id: w.id,
-                idx: special ? w.id : root.hyprDisplayIndex(w.id),
-                name: special ? w.name.replace(/^special:/, "") : "",
-                hyprName: w.name,
-                output: w.monitor ? w.monitor.name : "",
-                active: w.monitor && w.monitor.activeWorkspace
-                        ? w.monitor.activeWorkspace.id === w.id : false,
-                focused: w.id === focusedId
-            }
-        })
+        const fw = Hyprland.focusedWorkspace
+        const focusedId = fw ? fw.id : 0
+
+        // special workspaces (id < 0) never get a chip of their own
+        const ws = [...Hyprland.workspaces.values].filter(w => w.id >= 0).map(w => ({
+            id: w.id,
+            idx: root.hyprDisplayIndex(w.id),
+            name: "",
+            hyprName: w.name,
+            output: w.monitor ? w.monitor.name : "",
+            active: w.monitor && w.monitor.activeWorkspace
+                    ? w.monitor.activeWorkspace.id === w.id : false,
+            focused: w.id === focusedId
+        }))
         ws.sort((a, b) => (a.output || "").localeCompare(b.output || "") || a.idx - b.idx)
         root.workspaces = ws
     }
