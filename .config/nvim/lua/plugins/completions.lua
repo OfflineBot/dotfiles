@@ -52,10 +52,15 @@ return {
                         -- module path, otherwise fall back to a source tag
                         before = function(entry, vim_item)
                             local details = entry.completion_item.labelDetails or {}
-                            local origin = (details.detail or details.description or "")
-                                :gsub("^%(use%s+", "")
-                                :gsub("%)$", "")
-                            if origin:find("::") then
+                            local text = details.detail or details.description or ""
+                            -- rust-analyzer marks importable items as
+                            -- "(use std::collections::HashMap)"; anything else
+                            -- already carrying a module path we take as-is
+                            local origin = text:match("^%(use%s+(.-)%)$")
+                            if not origin and text:find("::") then
+                                origin = text
+                            end
+                            if origin and origin ~= "" then
                                 vim_item.menu = origin
                             else
                                 vim_item.menu = ({
