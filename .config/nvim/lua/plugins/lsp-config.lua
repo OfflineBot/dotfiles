@@ -31,6 +31,8 @@ return {
             end)
 
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
+            -- ask servers to send labelDetails (source crate/module) with items
+            capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
 
             vim.lsp.config("*", {
                 capabilities = capabilities,

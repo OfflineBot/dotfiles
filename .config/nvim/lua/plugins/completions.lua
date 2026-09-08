@@ -46,12 +46,27 @@ return {
                         mode = "symbol_text",
                         maxwidth = 40,
                         ellipsis_char = "…",
-                        menu = {
-                            nvim_lsp = "[lsp]",
-                            luasnip  = "[snip]",
-                            buffer   = "[buf]",
-                            path     = "[path]",
-                        },
+                        -- show where the item comes from: rust-analyzer puts
+                        -- the source path in labelDetails ("(use std::collections::HashMap)"),
+                        -- strip the use-wrapper and show it when it is a real
+                        -- module path, otherwise fall back to a source tag
+                        before = function(entry, vim_item)
+                            local details = entry.completion_item.labelDetails or {}
+                            local origin = (details.detail or details.description or "")
+                                :gsub("^%(use%s+", "")
+                                :gsub("%)$", "")
+                            if origin:find("::") then
+                                vim_item.menu = origin
+                            else
+                                vim_item.menu = ({
+                                    nvim_lsp = "[lsp]",
+                                    luasnip  = "[snip]",
+                                    buffer   = "[buf]",
+                                    path     = "[path]",
+                                })[entry.source.name]
+                            end
+                            return vim_item
+                        end,
                     }),
                 },
                 experimental = {
