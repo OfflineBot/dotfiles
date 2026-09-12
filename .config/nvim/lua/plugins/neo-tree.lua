@@ -8,6 +8,10 @@ return {
         "catppuccin/nvim",
 	},
 	config = function()
+        if vim.g.neotree_auto_close == nil then
+            vim.g.neotree_auto_close = true
+        end
+
         require("neo-tree").setup({
             filesystem = {
                 window = {
@@ -25,11 +29,21 @@ return {
                 {
                     event = "file_opened",
                     handler = function(file_path)
-                        require("neo-tree.command").execute({ action = "close" })
+                        if vim.g.neotree_auto_close then
+                            require("neo-tree.command").execute({ action = "close" })
+                        end
                     end,
                 }
             },
         })
+		vim.api.nvim_create_user_command("ToggleAutoClose", function()
+			vim.g.neotree_auto_close = not vim.g.neotree_auto_close
+			vim.notify(
+				"Neo-tree auto close: " .. (vim.g.neotree_auto_close and "on" or "off"),
+				vim.log.levels.INFO
+			)
+		end, { desc = "Toggle whether neo-tree closes when a file is opened" })
+
 		vim.keymap.set("n", "<C-n>", "<Cmd>Neotree filesystem toggle right<CR>", {})
 		vim.keymap.set("n", "<leader>bf", "<Cmd>Neotree buffers reveal float<CR>", {})
 

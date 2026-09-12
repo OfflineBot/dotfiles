@@ -2,7 +2,7 @@
 
 local colors = {
     active   = { colors = { "rgb(cba6f7)", "rgb(eba0ac)" }, angle = 45 },
-    inactive = "rgba(1e1e2e00)",
+    inactive = "rgba(3f3f4fff)",
     urgent   = "rgb(f38ba8)",
     bright   = "rgb(cdd6f4)",
     bg       = "rgb(1e1e2e)",
@@ -10,10 +10,10 @@ local colors = {
 
 hl.config({
     general = {
-        gaps_in  = 3,
-        gaps_out = 5,
+        gaps_in  = 5,
+        gaps_out = 8,
 
-        border_size = 3,
+        border_size = 2,
 
         col = {
             active_border   = colors.active,
@@ -21,7 +21,6 @@ hl.config({
         },
 
         resize_on_border = false,
-        allow_tearing    = false,
 
         layout = "dwindle",
     },
