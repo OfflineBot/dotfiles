@@ -10,7 +10,7 @@ Scope {
     property color backgroundColor: "#1e1e2e"
     property color borderColor: "#cdd6f4"
     property color textColor: "#cdd6f4"
-    property color accentColor: "#cba6f7"
+    property color accentColor: Accent.color
     property real backgroundOpacity: 0.93
 
     property bool open: false

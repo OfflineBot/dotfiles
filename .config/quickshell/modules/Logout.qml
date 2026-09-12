@@ -15,8 +15,8 @@ Scope {
     property real backgroundOpacity: 0.65
     property real backdropOpacity: 0.35
 
-    property color logoutColor: "#cba6f7"
-    property color poweroffColor: "#f38ba8"
+    property color logoutColor: Accent.color
+    property color poweroffColor: Accent.color
     property color rebootColor: "#89dceb"
 
     property int gap: 10

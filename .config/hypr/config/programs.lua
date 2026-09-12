@@ -13,6 +13,7 @@ M.vpnMenu       = "$HOME/.config/hypr/scripts/vpn-menu"
 M.clipboardMenu = "$HOME/.config/hypr/scripts/clipboard-menu"
 
 M.wallpaper = "$HOME/.config/hypr/scripts/wallpapers"
+M.accent    = "$HOME/.config/hypr/scripts/accent"
 
 M.screenshotDir = "$HOME/Pictures/Screenshots"
 

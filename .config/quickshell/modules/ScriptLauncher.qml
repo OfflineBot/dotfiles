@@ -11,7 +11,7 @@ Scope {
     property color borderColor: "#cdd6f4"
     property color searchBorderColor: "#7f849c"
     property color textColor: "#cdd6f4"
-    property color selectionColor: "#cba6f7"
+    property color selectionColor: Accent.color
     property real backgroundOpacity: 0.78
     property int borderWidth: 1
     property int cornerRadius: 14
@@ -58,7 +58,7 @@ Scope {
     }
     function scriptColor(name) {
         switch (root.extOf(name)) {
-            case "sh": case "bash": case "zsh": case "fish": return "#cba6f7"
+            case "sh": case "bash": case "zsh": case "fish": return Accent.color
             case "py":                                        return "#4b8bbe"
             case "js": case "mjs": case "cjs": case "ts":     return "#f1e05a"
             case "lua":                                       return "#51a0cf"

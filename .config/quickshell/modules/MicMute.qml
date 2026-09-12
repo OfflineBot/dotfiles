@@ -6,7 +6,7 @@ Item {
     id: root
 
     property color textColor: "#cdd6f4"
-    property color mutedColor: "#f38ba8"
+    property color mutedColor: Accent.color
 
     property bool muted: false
 

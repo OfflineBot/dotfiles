@@ -1,7 +1,25 @@
 ---- palette: catppuccin mocha -------------------------------------------
 
+-- accent color, shared with quickshell and neovim via ~/.config/theme/accent
+-- (two lines: gradient head and tail). the `accent` script cycles it live.
+local function read_accent()
+    local head, tail = "cba6f7", "eba0ac"
+    local f = io.open(os.getenv("HOME") .. "/.config/theme/accent", "r")
+    if f then
+        local a, b = f:read("l"), f:read("l")
+        f:close()
+        a = a and a:gsub("[^%x]", "")
+        b = b and b:gsub("[^%x]", "")
+        if a and #a == 6 then head = a end
+        if b and #b == 6 then tail = b end
+    end
+    return head, tail
+end
+
+local accent_head, accent_tail = read_accent()
+
 local colors = {
-    active   = { colors = { "rgb(cba6f7)", "rgb(eba0ac)" }, angle = 45 },
+    active   = { colors = { "rgb(" .. accent_head .. ")", "rgb(" .. accent_tail .. ")" }, angle = 45 },
     inactive = "rgba(3f3f4fff)",
     urgent   = "rgb(f38ba8)",
     bright   = "rgb(cdd6f4)",

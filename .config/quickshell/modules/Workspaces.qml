@@ -6,7 +6,7 @@ Row {
     property var provider
     property string screenName
     property color textColor: "#cdd6f4"
-    property color activeColor: "#cba6f7"
+    property color activeColor: Accent.color
 
     // scratchpad indicator: no extra chip, just recolor the active chip on the
     // monitor the scratchpad is showing on

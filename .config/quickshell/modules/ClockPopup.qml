@@ -13,8 +13,8 @@ Scope {
     property color backgroundColor: "#1e1e2e"
     property color borderColor: "#cdd6f4"
     property color textColor: "#cdd6f4"
-    property color accentColor: "#cba6f7"
-    property color mutedColor: "#f38ba8"
+    property color accentColor: Accent.color
+    property color mutedColor: Accent.color
     property real backgroundOpacity: 0.65
     property int barHeight: 30
     property int barMargin: 8
@@ -26,8 +26,8 @@ Scope {
 
     signal dismissed()
 
-    // Singleton anstossen, damit gespeicherte App-Lautstaerken sofort
-    // (und nicht erst nach dem ersten Slider-Griff) angewendet werden
+    // nudge the singleton so saved per-app volumes are applied right away
+    // (not only after the first slider touch)
     Component.onCompleted: VolumeMemory.applyAll()
 
     // ---- brightness (brightnessctl, backlight class) ----
@@ -115,7 +115,7 @@ Scope {
         return n.nickname || n.description || n.name || "?"
     }
 
-    // ---- media (MPRIS, alle Quellen) --------------------
+    // ---- media (MPRIS, all sources) --------------------
     readonly property var mprisList: Mpris.players ? [...Mpris.players.values] : []
 
     readonly property bool hasSpotifyPlayer:
@@ -401,12 +401,12 @@ Scope {
                     color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.12)
                 }
 
-                // ---- media: alle Quellen ----------------
+                // ---- media: all sources ----------------
                 Column {
                     width: parent.width
                     spacing: 10
 
-                    // Spotify-Card, auch wenn Spotify nicht laeuft (Klick startet es)
+                    // spotify card, even when spotify isn't running (click launches it)
                     RowLayout {
                         width: parent.width
                         spacing: 10
@@ -544,9 +544,9 @@ Scope {
                                     visible: mediaRow.modelData.volumeSupported
                                              || mediaRow.streams.length > 0
 
-                                    // Spotify & Co. koennen ihre Lautstaerke selbst (MPRIS) —
-                                    // die ueberlebt Titelwechsel und Neustarts. Nur wenn der
-                                    // Player das nicht kann, regeln wir den Pipewire-Stream.
+                                    // spotify and friends handle their own volume (MPRIS),
+                                    // which survives title changes and restarts. only if the
+                                    // player can't do that do we drive the pipewire stream.
                                     readonly property bool viaPlayer: mediaRow.modelData.volumeSupported
                                     readonly property real vol: viaPlayer
                                         ? mediaRow.modelData.volume
@@ -583,9 +583,9 @@ Scope {
                             Row {
                                 spacing: 14
 
-                                // Mute wirkt direkt am Pipewire-Stream — funktioniert
-                                // auch, wenn die Seite keine Media-Session hat und
-                                // Pause deshalb ins Leere geht
+                                // mute acts directly on the pipewire stream - works
+                                // even when the page has no media session and pause
+                                // therefore does nothing
                                 Text {
                                     anchors.verticalCenter: parent.verticalCenter
                                     readonly property bool muted:

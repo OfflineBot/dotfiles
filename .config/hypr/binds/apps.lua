@@ -39,6 +39,9 @@ hl.bind(mod .. " + X", hl.dsp.exec_cmd(p.wallpaper .. " next"),
 hl.bind(mod .. " + SHIFT + X", hl.dsp.exec_cmd(p.wallpaper .. " random"),
     { description = "Wallpaper: random on all monitors" })
 
+hl.bind(mod .. " + CTRL + X", hl.dsp.exec_cmd(p.accent .. " next"),
+    { description = "Accent: cycle color" })
+
 hl.bind(mod .. " + N", hl.dsp.exec_cmd(p.lock),
     { description = "Lock: hyprlock" })
 

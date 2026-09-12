@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# central accent color, shared by hyprland, quickshell and neovim.
+# each entry is: name primary secondary (secondary is the border gradient tail)
+palette=(
+    "mauve  cba6f7 eba0ac"
+    "red    f38ba8 eba0ac"
+    "peach  fab387 f9e2af"
+    "yellow f9e2af fab387"
+    "green  a6e3a1 94e2d5"
+    "teal   94e2d5 89dceb"
+    "blue   89b4fa b4befe"
+    "pink   f5c2e7 cba6f7"
+)
+
+state="$HOME/.config/theme/accent"
+mkdir -p "$(dirname "$state")"
+
+current() {
+    [[ -f "$state" ]] && head -1 "$state" | tr -d '#[:space:]' || echo ""
+}
+
+apply() {
+    local name=$1 primary=$2 secondary=$3
+    printf '%s\n%s\n' "$primary" "$secondary" > "$state"
+
+    if command -v hyprctl >/dev/null; then
+        # the lua config parser rejects `hyprctl keyword`; go through eval
+        hyprctl eval "hl.config({ general = { col = { active_border = { colors = { \"rgb($primary)\", \"rgb($secondary)\" }, angle = 45 } } } })" >/dev/null
+    fi
+
+    command -v notify-send >/dev/null \
+        && notify-send -t 1500 "Accent" "$name  #$primary"
+    echo "$name  #$primary"
+}
+
+index_of() {
+    local hex=$1 i=0
+    for entry in "${palette[@]}"; do
+        read -r _ p _ <<<"$entry"
+        [[ "$p" == "$hex" ]] && { echo "$i"; return; }
+        ((i++))
+    done
+    echo -1
+}
+
+case "${1:-next}" in
+    next|prev)
+        i=$(index_of "$(current)")
+        n=${#palette[@]}
+        if [[ "$1" == "prev" ]]; then
+            i=$(( (i - 1 + n) % n ))
+        else
+            i=$(( (i + 1) % n ))
+        fi
+        read -r name primary secondary <<<"${palette[$i]}"
+        apply "$name" "$primary" "$secondary"
+        ;;
+    set)
+        want=${2:-}
+        for entry in "${palette[@]}"; do
+            read -r name primary secondary <<<"$entry"
+            if [[ "$want" == "$name" || "$want" == "$primary" || "$want" == "#$primary" ]]; then
+                apply "$name" "$primary" "$secondary"
+                exit 0
+            fi
+        done
+        echo "unknown accent: $want" >&2
+        exit 1
+        ;;
+    list)
+        printf '%s\n' "${palette[@]}"
+        ;;
+    *)
+        echo "usage: accent [next|prev|set <name|hex>|list]" >&2
+        exit 1
+        ;;
+esac

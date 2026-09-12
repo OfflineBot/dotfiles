@@ -13,7 +13,7 @@ Item {
     property int barMargin: 8
     property real backgroundOpacity: 0.65
     property color textColor: "#cdd6f4"
-    property color accentColor: "#cba6f7"
+    property color accentColor: Accent.color
     property color warnColor: "#f9e2af"
     property color backgroundColor: "#1e1e2e"
     property color borderColor: "#cdd6f4"
@@ -468,7 +468,7 @@ Item {
                     Layout.fillWidth: true
                     visible: root.errorText.length > 0
                     text: root.errorText
-                    color: "#f38ba8"
+                    color: Accent.color
                     font.family: "FiraCode Nerd Font Mono"
                     font.pixelSize: 11
                     wrapMode: Text.WordWrap

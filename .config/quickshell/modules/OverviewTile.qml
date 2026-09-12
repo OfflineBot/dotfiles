@@ -15,7 +15,7 @@ Rectangle {
     property bool selected: false
     property color textColor: "#cdd6f4"
     property color borderColor: "#cdd6f4"
-    property color accentColor: "#cba6f7"
+    property color accentColor: Accent.color
     property color windowBackdrop: "#181825"
     property bool live: true
 

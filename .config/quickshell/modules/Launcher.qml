@@ -12,7 +12,7 @@ Scope {
     property color borderColor: "#cdd6f4"
     property color searchBorderColor: "#7f849c"
     property color textColor: "#cdd6f4"
-    property color selectionColor: "#cba6f7"
+    property color selectionColor: Accent.color
     property real backgroundOpacity: 0.78
     property int borderWidth: 1
     property int cornerRadius: 14
@@ -79,7 +79,7 @@ Scope {
 
         readonly property int visibleRows: Math.min(results.length, root.maxRows)
         readonly property int listH: visibleRows * root.rowH
-        // Index hinter der Liste = die DuckDuckGo-Zeile unten
+        // the index past the list = the DuckDuckGo row at the bottom
         readonly property int totalCount: results.length + (query !== "" ? 1 : 0)
 
         implicitWidth: root.boxWidth
@@ -117,8 +117,8 @@ Scope {
             if (idx >= 0) return 7000 - idx * 5 - name.length
             const f = panel.fuzzyScore(q, name)
             if (f >= 0) return 4000 + f
-            // Kommentar/Keywords nur als schwacher Notnagel — sonst matcht
-            // "steam" jedes Spiel mit "Play this game on Steam" im Comment
+            // comment/keywords only as a weak last resort - otherwise
+            // "steam" matches every game with "Play this game on Steam"
             const extra = ((e.genericName || "") + " " + (e.comment || "") + " "
                           + ((e.keywords || []).join(" "))).toLowerCase()
             if (extra.includes(q)) return 500
@@ -133,7 +133,7 @@ Scope {
             const q = search.text.toLowerCase().trim()
             panel.query = q
 
-            // leer -> nichts anzeigen
+            // empty -> show nothing
             if (q === "") {
                 panel.results = []
                 panel.selectedIndex = 0
@@ -144,7 +144,7 @@ Scope {
 
             let items = []
 
-            // Rechner: "6 * 6" -> 36 (Enter kopiert das Ergebnis)
+            // calculator: "6 * 6" -> 36 (Enter copies the result)
             if (/^[0-9+\-*/(). ,%^]+$/.test(q) && /[0-9]/.test(q)
                 && /[+*/%^]/.test(q) || /^-?[0-9.,() ]+-[0-9.,() ]+/.test(q)) {
                 try {
@@ -156,8 +156,8 @@ Scope {
                 } catch (err) {}
             }
 
-            // sieht die Eingabe wie eine URL aus, wird die Aktions-Zeile
-            // unten zum "öffnen" statt zur DuckDuckGo-Suche
+            // if the input looks like a URL, the action row at the bottom
+            // becomes "open" instead of the DuckDuckGo search
             panel.queryIsUrl = q.includes(".") && !q.includes(" ")
                               && q.length > 3 && !/^[0-9.,]+$/.test(q)
             panel.queryUrl = panel.queryIsUrl
@@ -172,9 +172,9 @@ Scope {
                 if (s > -1) items.push({ kind: "app", name: e.name, entry: e, s: s })
             }
 
-            // gibt es starke Treffer, fliegen die schwachen App-Treffer
-            // (Comment-Matches, wackelige Fuzzy-Treffer) komplett raus;
-            // Aktionen wie Rechner/Web bleiben immer
+            // when there are strong hits, the weak app hits (comment
+            // matches, shaky fuzzy hits) are dropped entirely; actions
+            // like the calculator/web always stay
             const top = items.reduce((m, x) => Math.max(m, x.s), 0)
             if (top >= 7000) items = items.filter(x => x.kind !== "app" || x.s >= 3000)
 
@@ -356,7 +356,7 @@ Scope {
                     }
                 }
 
-                // ---- Aktion als eigene, abgesetzte Zeile darunter ----
+                // ---- action as its own separate row below ----
                 Item {
                     width: parent.width
                     height: 4
