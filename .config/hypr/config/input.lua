@@ -19,8 +19,15 @@ hl.config({
         touchpad = {
             tap_to_click   = true,
             natural_scroll = true,
+            scroll_factor  = 0.55,
         },
     },
+})
+
+hl.device({
+    name          = "elan06fa:00-04f3:3280-touchpad",
+    sensitivity   = 0.0,
+    accel_profile = "adaptive",
 })
 
 hl.config({

@@ -2,6 +2,8 @@ hl.monitor({ output = "DP-2", mode = "2560x1440@180.002", position = "1920x0",  
 hl.monitor({ output = "DP-1", mode = "1920x1080@144.001", position = "0x180",    scale = 1, transform = 0 })
 hl.monitor({ output = "DP-3", mode = "1280x1024@75.025",  position = "4480x500", scale = 1, transform = 0 })
 
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 1 })
+
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
 
 local M = {}
