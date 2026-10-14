@@ -359,6 +359,27 @@ Item {
         }
     }
 
+    // ---- fullscreen click-catcher (no blur) -------------
+    PanelWindow {
+        id: dismissWin
+        screen: root.screen
+        visible: root.popupShown
+        color: "transparent"
+        exclusionMode: ExclusionMode.Ignore
+        aboveWindows: true
+        WlrLayershell.layer: WlrLayer.Top
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        WlrLayershell.namespace: "quickshell-network-catch"
+
+        anchors.top: true; anchors.bottom: true
+        anchors.left: true; anchors.right: true
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: root.popupShown = false
+        }
+    }
+
     // ---- popup ------------------------------------------
     PanelWindow {
         id: popup
