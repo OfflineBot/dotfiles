@@ -13,6 +13,7 @@ config/
   env.lua               cursor theme, desktop identity
   input.lua             keyboard, mouse, touchpad
   theme.lua             colours, borders, gaps, rounding, blur
+  glass.lua             hyprglass plugin, `enabled` switch
   animations.lua        curves and springs
   layout.lua            dwindle layout
   rules.lua             window and layer rules

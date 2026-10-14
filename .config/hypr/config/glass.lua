@@ -1,14 +1,28 @@
 ---- hyprglass (Liquid Glass) ---------------------------------------------
 
+-- Master switch: false unloads the plugin, true loads it again. Applies
+-- live on save (config reload); translucent windows then just get the
+-- regular blur from theme.lua.
+local enabled = true
+
 local plugin_so = (os.getenv("HOME") or "") .. "/.local/src/hyprglass/hyprglass.so"
+local loaded    = hl.plugin.hyprglass ~= nil
 
--- Load on startup; the subsequent reload lets the guard below kick in
+-- The subsequent reload lets the config block below kick in
 -- (same pattern as `hyprpm reload -n`).
-hl.on("hyprland.start", function()
+local function load_plugin()
     hl.exec_cmd("hyprctl plugin load " .. plugin_so .. " && hyprctl reload")
-end)
+end
 
-if hl.plugin.hyprglass then
+if enabled then
+    hl.on("hyprland.start", load_plugin)
+    -- switched on in a running session; a second load at startup is refused
+    if not loaded then pcall(load_plugin) end
+elseif loaded then
+    hl.exec_cmd("hyprctl plugin unload " .. plugin_so)
+end
+
+if enabled and loaded then
     local hg = hl.plugin.hyprglass
 
     hg.config({
