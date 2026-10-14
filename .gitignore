@@ -1,2 +1,7 @@
 # maschinenlokal / generiert
 .config/fish/fish_variables
+.config/vesktop/Code Cache/
+.config/vesktop/Crashpad/
+.config/vesktop/sessionData/
+.config/vesktop/Singleton*
+.config/vesktop/state.json
