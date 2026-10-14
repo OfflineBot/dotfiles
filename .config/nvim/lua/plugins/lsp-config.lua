@@ -63,6 +63,11 @@ return {
 
             vim.lsp.config("rust_analyzer", {
                 cmd = { "rust-analyzer" },
+                settings = {
+                    ["rust-analyzer"] = {
+                        cargo = { targetDir = true },
+                    },
+                },
             })
 
             vim.lsp.config("basedpyright", {
