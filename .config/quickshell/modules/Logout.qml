@@ -29,7 +29,7 @@ Scope {
         {
             icon: "󰍃", ox: 12, label: "Logout", hint: "L",
             accent: root.logoutColor,
-            cmd: ["sh", "-c", "hyprctl dispatch exit; niri msg action quit --skip-confirmation; mmsg -s -d quit"]
+            cmd: ["sh", "-c", "hyprctl dispatch 'hp.dsp.exit()'; niri msg action quit --skip-confirmation; mmsg -s -d quit"]
         },
         {
             icon: "󰐥", ox: 0, label: "Shutdown", hint: "P",

@@ -19,9 +19,19 @@ Singleton {
     }
 
     FileView {
+        id: file
         path: Quickshell.env("HOME") + "/.config/theme/accent"
         watchChanges: true
         onFileChanged: reload()
         onLoaded: root.parse(text())
+        // the file only exists once `accent` ran; a missing file can't be
+        // watched, so poll until it shows up.
+        onLoadFailed: retry.start()
+    }
+
+    Timer {
+        id: retry
+        interval: 2000
+        onTriggered: file.reload()
     }
 }
